@@ -1,0 +1,54 @@
+{
+  "common": {
+    "appName": "Wedding Registry",
+    "loading": "Loading…",
+    "retry": "Try again",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "splash": {
+    "tagline": "Every gift, remembered forever"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "events": "Events",
+    "search": "Search",
+    "profile": "Profile"
+  },
+  "theme": {
+    "telegram": "Follow Telegram",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "greeting": "Welcome back, {name}",
+    "stats": {
+      "totalEvents": "Total Events",
+      "totalGifts": "Total Gifts",
+      "totalMoney": "Total Cash",
+      "recentActivity": "Recent Activity"
+    },
+    "emptyActivity": "Nothing recorded yet",
+    "activity": {
+      "gift_added": "{name} added a gift for {target}",
+      "gift_updated": "{name} updated a gift for {target}",
+      "event_created": "{name} created the event {target}"
+    }
+  },
+  "auth": {
+    "verifying": "Verifying your Telegram account…",
+    "failedTitle": "We couldn't verify your Telegram account",
+    "failedBody": "Please reopen this app from Telegram.",
+    "retryButton": "Try again"
+  },
+  "errors": {
+    "genericTitle": "Something went wrong",
+    "genericBody": "An unexpected error occurred. You can try again.",
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "The page you're looking for doesn't exist or has moved.",
+    "goHome": "Go to Dashboard"
+  }
+}

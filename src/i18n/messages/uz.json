@@ -1,0 +1,54 @@
+{
+  "common": {
+    "appName": "Wedding Registry",
+    "loading": "Yuklanmoqda…",
+    "retry": "Qayta urinish",
+    "back": "Orqaga",
+    "save": "Saqlash",
+    "cancel": "Bekor qilish"
+  },
+  "splash": {
+    "tagline": "Har bir sovg'a abadiy xotirada saqlanadi"
+  },
+  "nav": {
+    "dashboard": "Bosh sahifa",
+    "events": "Tadbirlar",
+    "search": "Qidiruv",
+    "profile": "Profil"
+  },
+  "theme": {
+    "telegram": "Telegram kabi",
+    "light": "Yorug'",
+    "dark": "Qorong'u",
+    "system": "Tizim"
+  },
+  "dashboard": {
+    "title": "Boshqaruv paneli",
+    "greeting": "Xush kelibsiz, {name}",
+    "stats": {
+      "totalEvents": "Jami tadbirlar",
+      "totalGifts": "Jami sovg'alar",
+      "totalMoney": "Jami pul mablag'i",
+      "recentActivity": "So'nggi harakatlar"
+    },
+    "emptyActivity": "Hozircha hech narsa qayd etilmagan",
+    "activity": {
+      "gift_added": "{name} {target} uchun sovg'a qo'shdi",
+      "gift_updated": "{name} {target} sovg'asini tahrirladi",
+      "event_created": "{name} {target} tadbirini yaratdi"
+    }
+  },
+  "auth": {
+    "verifying": "Telegram hisobingiz tekshirilmoqda…",
+    "failedTitle": "Telegram hisobingizni tasdiqlab bo'lmadi",
+    "failedBody": "Iltimos, ilovani Telegram ichidan qayta oching.",
+    "retryButton": "Qayta urinish"
+  },
+  "errors": {
+    "genericTitle": "Nimadir xato ketdi",
+    "genericBody": "Kutilmagan xatolik yuz berdi. Qayta urinib ko'rishingiz mumkin.",
+    "notFoundTitle": "Sahifa topilmadi",
+    "notFoundBody": "Siz qidirayotgan sahifa mavjud emas yoki ko'chirilgan.",
+    "goHome": "Bosh sahifaga qaytish"
+  }
+}
