@@ -5,14 +5,35 @@
     "retry": "Повторить",
     "back": "Назад",
     "save": "Сохранить",
-    "cancel": "Отмена"
+    "cancel": "Отмена",
+    "edit": "Изменить",
+    "delete": "Удалить",
+    "restore": "Восстановить",
+    "archive": "В архив",
+    "unarchive": "Из архива",
+    "search": "Поиск",
+    "filter": "Фильтр",
+    "sort": "Сортировка",
+    "clear": "Очистить",
+    "clearAll": "Очистить всё",
+    "loadMore": "Показать ещё",
+    "showing": "Показано {count} из {total}",
+    "optional": "Необязательно",
+    "none": "Нет",
+    "copy": "Скопировать ссылку",
+    "copied": "Ссылка скопирована",
+    "share": "Поделиться",
+    "reasonLabel": "Причина изменения",
+    "reasonPlaceholder": "Сохранится в истории, чтобы причина была видна всем",
+    "confirm": "Подтвердить",
+    "saving": "Сохраняем…"
   },
   "splash": {
     "tagline": "Каждый подарок остаётся в памяти навсегда"
   },
   "nav": {
     "dashboard": "Главная",
-    "events": "Мероприятия",
+    "events": "Свадьбы",
     "search": "Поиск",
     "profile": "Профиль"
   },
@@ -26,29 +47,219 @@
     "title": "Панель управления",
     "greeting": "С возвращением, {name}",
     "stats": {
-      "totalEvents": "Всего мероприятий",
+      "totalEvents": "Всего свадеб",
       "totalGifts": "Всего подарков",
       "totalMoney": "Общая сумма",
+      "totalGuests": "Всего гостей",
       "recentActivity": "Последние действия"
     },
     "emptyActivity": "Пока ничего не записано",
-    "activity": {
-      "gift_added": "{name} добавил(а) подарок для {target}",
-      "gift_updated": "{name} изменил(а) подарок для {target}",
-      "event_created": "{name} создал(а) мероприятие {target}"
-    }
+    "viewAll": "Показать все"
   },
   "auth": {
     "verifying": "Проверяем ваш аккаунт Telegram…",
     "failedTitle": "Не удалось подтвердить аккаунт Telegram",
     "failedBody": "Пожалуйста, откройте это приложение через Telegram.",
-    "retryButton": "Повторить попытку"
+    "retryButton": "Повторить попытку",
+    "noAccessTitle": "У вас пока нет доступа",
+    "noAccessBody": "Попросите члена семьи, который ведёт реестр, добавить вас. После этого откройте приложение заново."
+  },
+  "events": {
+    "title": "Свадьбы",
+    "subtitle": "Каждая свадьба и все записанные подарки",
+    "create": "Новая свадьба",
+    "createTitle": "Новая свадьба",
+    "editTitle": "Изменить свадьбу",
+    "empty": "Свадьбы пока не записаны",
+    "emptyBody": "Добавьте первую свадьбу, чтобы начать вести записи подарков.",
+    "emptyFiltered": "Свадьбы по этим условиям не найдены",
+    "emptyFilteredBody": "Попробуйте другой год или другой запрос.",
+    "giftCount": "{count, plural, =0 {Нет подарков} one {# подарок} few {# подарка} many {# подарков} other {# подарка}}",
+    "updated": "Изменено {time}",
+    "couple": "{bride} и {groom}",
+    "status": {
+      "draft": "Черновик",
+      "active": "Активная",
+      "archived": "В архиве",
+      "deleted": "Удалена"
+    },
+    "fields": {
+      "title": "Название свадьбы",
+      "titlePlaceholder": "например: Свадьба Эркинжона",
+      "brideName": "Имя невесты",
+      "groomName": "Имя жениха",
+      "description": "Описание",
+      "eventDate": "Дата свадьбы",
+      "eventDateHint": "Оставьте пустым, если известен только год",
+      "eventYear": "Год",
+      "location": "Место",
+      "locationPlaceholder": "например: Андижан",
+      "coverImage": "Ссылка на обложку",
+      "status": "Статус"
+    },
+    "filters": {
+      "allYears": "Все годы",
+      "allStatuses": "Все статусы",
+      "showDeleted": "Показать удалённые",
+      "searchPlaceholder": "Поиск по свадьбе или имени"
+    },
+    "sort": {
+      "newest": "Сначала новые",
+      "oldest": "Сначала старые",
+      "alphabetical": "А–Я",
+      "recently_updated": "Недавно изменённые"
+    },
+    "details": {
+      "overview": "Обзор",
+      "gifts": "Подарки",
+      "activity": "Действия",
+      "totalGifts": "Всего подарков",
+      "totalGuests": "Гости",
+      "cashTotals": "Получено деньгами",
+      "otherTotals": "Другие подарки",
+      "noCash": "Денежных подарков нет",
+      "noTotals": "Подарки пока не записаны",
+      "auditHistory": "История изменений",
+      "auditEmpty": "Изменений нет",
+      "adminOnly": "Видно только администратору реестра"
+    },
+    "actions": {
+      "deleteTitle": "Удалить эту свадьбу?",
+      "deleteBody": "Она скроется из списка вместе с записями подарков. Ничего не стирается — вы сможете восстановить её в любой момент.",
+      "restoreTitle": "Восстановить эту свадьбу?",
+      "restoreBody": "Она вернётся в список вместе с записями подарков.",
+      "archiveTitle": "Отправить свадьбу в архив?",
+      "archiveBody": "Все данные сохранятся и останутся в поиске — просто уйдут из основного списка.",
+      "deleted": "Свадьба удалена",
+      "restored": "Свадьба восстановлена",
+      "archived": "Свадьба в архиве",
+      "unarchived": "Свадьба возвращена из архива",
+      "created": "Свадьба создана",
+      "updated": "Свадьба изменена"
+    }
+  },
+  "gifts": {
+    "title": "Подарки",
+    "add": "Добавить подарок",
+    "addTitle": "Добавить подарок",
+    "editTitle": "Изменить подарок",
+    "empty": "Подарки пока не записаны",
+    "emptyBody": "Добавьте первый подарок для этой свадьбы.",
+    "emptyFiltered": "По этому запросу подарков нет",
+    "emptyFilteredBody": "Попробуйте другое имя, тип или валюту.",
+    "searchPlaceholder": "Поиск по имени или описанию",
+    "recordedBy": "Записал(а) {name}",
+    "deletedBadge": "Удалён",
+    "fields": {
+      "giverName": "Кто подарил",
+      "giverNamePlaceholder": "Полное имя",
+      "giftType": "Тип подарка",
+      "giftTypePlaceholder": "Выберите тип",
+      "amount": "Сумма",
+      "currency": "Валюта",
+      "currencyPlaceholder": "Выберите валюту",
+      "weight": "Вес или количество",
+      "unit": "Единица",
+      "unitPlaceholder": "кг, голов, штук…",
+      "description": "Что подарили",
+      "descriptionPlaceholder": "например: Холодильник, золотое кольцо",
+      "giftDate": "Дата вручения",
+      "notes": "Заметки"
+    },
+    "filters": {
+      "allTypes": "Все типы",
+      "allCurrencies": "Все валюты",
+      "showDeleted": "Показать удалённые"
+    },
+    "sort": {
+      "newest": "Сначала новые",
+      "oldest": "Сначала старые",
+      "highest_amount": "Сначала большие суммы",
+      "lowest_amount": "Сначала малые суммы",
+      "alphabetical": "А–Я"
+    },
+    "actions": {
+      "deleteTitle": "Удалить этот подарок?",
+      "deleteBody": "Он скроется из списка. Ничего не стирается — вы сможете восстановить его в любой момент.",
+      "restoreTitle": "Восстановить этот подарок?",
+      "restoreBody": "Он вернётся в список подарков этой свадьбы.",
+      "deleted": "Подарок удалён",
+      "restored": "Подарок восстановлен",
+      "created": "Подарок добавлен",
+      "updated": "Подарок изменён"
+    }
+  },
+  "search": {
+    "title": "Поиск",
+    "placeholder": "Найдите человека, свадьбу или год",
+    "hint": "Поиск по всем свадьбам: имя человека, тип подарка или год.",
+    "eventsSection": "Свадьбы",
+    "giftsSection": "Подарки",
+    "noResults": "По запросу «{query}» ничего не найдено",
+    "noResultsBody": "Проверьте написание или введите часть имени.",
+    "resultCount": "{count, plural, =0 {Нет результатов} one {# результат} few {# результата} many {# результатов} other {# результата}}"
+  },
+  "activity": {
+    "action": {
+      "INSERT": "добавил(а)",
+      "UPDATE": "изменил(а)",
+      "DELETE": "удалил(а)",
+      "RESTORE": "восстановил(а)"
+    },
+    "entity": {
+      "events": "свадьбу",
+      "gifts": "подарок",
+      "gift_types": "тип подарка",
+      "currencies": "валюту",
+      "user_roles": "роль",
+      "roles": "роль",
+      "settings": "настройку",
+      "attachments": "вложение"
+    },
+    "summary": "{name} {action} {entity}",
+    "unknownUser": "Кто-то",
+    "reason": "Причина: {reason}"
+  },
+  "realtime": {
+    "live": "В реальном времени",
+    "connecting": "Подключение…",
+    "error": "Нет связи — показаны последние данные"
+  },
+  "validation": {
+    "titleRequired": "Введите название свадьбы",
+    "titleTooLong": "Не длиннее 200 символов",
+    "yearRequired": "Введите год",
+    "yearInvalid": "Введите целый год, например 2024",
+    "yearOutOfRange": "Введите год от 1900 до 2100",
+    "dateInvalid": "Это некорректная дата",
+    "dateYearMismatch": "Эта дата не совпадает с указанным годом",
+    "giverNameRequired": "Укажите, кто подарил",
+    "giverNameTooLong": "Не длиннее 200 символов",
+    "giftTypeRequired": "Выберите тип подарка",
+    "amountRequired": "Введите сумму",
+    "currencyRequired": "Выберите валюту",
+    "weightRequired": "Введите вес или количество",
+    "unitRequired": "Добавьте единицу, например кг",
+    "descriptionRequired": "Опишите, что подарили",
+    "giftDateRequired": "Введите дату",
+    "numberInvalid": "Введите число",
+    "numberNegative": "Не может быть отрицательным"
   },
   "errors": {
     "genericTitle": "Что-то пошло не так",
     "genericBody": "Произошла непредвиденная ошибка. Вы можете попробовать снова.",
     "notFoundTitle": "Страница не найдена",
     "notFoundBody": "Страница, которую вы ищете, не существует или была перемещена.",
-    "goHome": "На главную"
+    "goHome": "На главную",
+    "eventNotFoundTitle": "Свадьба не найдена",
+    "eventNotFoundBody": "Возможно, она удалена или у вас нет к ней доступа.",
+    "backToEvents": "К списку свадеб",
+    "forbidden": "Это может сделать только администратор реестра",
+    "unauthenticated": "Пожалуйста, откройте приложение через Telegram",
+    "not_found": "Этой записи больше нет",
+    "validation": "Проверьте выделенные поля",
+    "conflict": "Такое уже существует",
+    "unknown": "Что-то пошло не так. Попробуйте снова.",
+    "network": "Нет связи с сервером. Проверьте подключение."
   }
 }

@@ -5,7 +5,28 @@
     "retry": "Try again",
     "back": "Back",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "restore": "Restore",
+    "archive": "Archive",
+    "unarchive": "Unarchive",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "clear": "Clear",
+    "clearAll": "Clear all",
+    "loadMore": "Load more",
+    "showing": "Showing {count} of {total}",
+    "optional": "Optional",
+    "none": "None",
+    "copy": "Copy link",
+    "copied": "Link copied",
+    "share": "Share",
+    "reasonLabel": "Reason for this change",
+    "reasonPlaceholder": "Recorded in the history so anyone can see why",
+    "confirm": "Confirm",
+    "saving": "Saving…"
   },
   "splash": {
     "tagline": "Every gift, remembered forever"
@@ -29,26 +50,216 @@
       "totalEvents": "Total Events",
       "totalGifts": "Total Gifts",
       "totalMoney": "Total Cash",
+      "totalGuests": "Total Guests",
       "recentActivity": "Recent Activity"
     },
     "emptyActivity": "Nothing recorded yet",
-    "activity": {
-      "gift_added": "{name} added a gift for {target}",
-      "gift_updated": "{name} updated a gift for {target}",
-      "event_created": "{name} created the event {target}"
-    }
+    "viewAll": "View all"
   },
   "auth": {
     "verifying": "Verifying your Telegram account…",
     "failedTitle": "We couldn't verify your Telegram account",
     "failedBody": "Please reopen this app from Telegram.",
-    "retryButton": "Try again"
+    "retryButton": "Try again",
+    "noAccessTitle": "You don't have access yet",
+    "noAccessBody": "Ask the family member who manages this registry to invite you. Once they do, reopen the app."
+  },
+  "events": {
+    "title": "Events",
+    "subtitle": "Every wedding, and every gift recorded for it",
+    "create": "New event",
+    "createTitle": "New event",
+    "editTitle": "Edit event",
+    "empty": "No weddings recorded yet",
+    "emptyBody": "Add the first wedding to start keeping its gift records.",
+    "emptyFiltered": "No weddings match these filters",
+    "emptyFilteredBody": "Try a different year or search term.",
+    "giftCount": "{count, plural, =0 {No gifts} one {# gift} other {# gifts}}",
+    "updated": "Updated {time}",
+    "couple": "{bride} & {groom}",
+    "status": {
+      "draft": "Draft",
+      "active": "Active",
+      "archived": "Archived",
+      "deleted": "Deleted"
+    },
+    "fields": {
+      "title": "Wedding title",
+      "titlePlaceholder": "e.g. Erkinjon's wedding",
+      "brideName": "Bride's name",
+      "groomName": "Groom's name",
+      "description": "Description",
+      "eventDate": "Wedding date",
+      "eventDateHint": "Leave empty if you only know the year",
+      "eventYear": "Year",
+      "location": "Location",
+      "locationPlaceholder": "e.g. Andijon",
+      "coverImage": "Cover image URL",
+      "status": "Status"
+    },
+    "filters": {
+      "allYears": "All years",
+      "allStatuses": "All statuses",
+      "showDeleted": "Show deleted",
+      "searchPlaceholder": "Search weddings or names"
+    },
+    "sort": {
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "alphabetical": "A–Z",
+      "recently_updated": "Recently updated"
+    },
+    "details": {
+      "overview": "Overview",
+      "gifts": "Gifts",
+      "activity": "Activity",
+      "totalGifts": "Total gifts",
+      "totalGuests": "Guests",
+      "cashTotals": "Cash received",
+      "otherTotals": "Other gifts",
+      "noCash": "No cash gifts recorded",
+      "noTotals": "No gifts recorded yet",
+      "auditHistory": "Change history",
+      "auditEmpty": "No changes recorded",
+      "adminOnly": "Only visible to the registry admin"
+    },
+    "actions": {
+      "deleteTitle": "Delete this wedding?",
+      "deleteBody": "It will be hidden from the list along with its gift records. Nothing is erased — you can restore it at any time.",
+      "restoreTitle": "Restore this wedding?",
+      "restoreBody": "It will reappear in the list, along with its gift records.",
+      "archiveTitle": "Archive this wedding?",
+      "archiveBody": "It stays fully intact and searchable, just out of the main list.",
+      "deleted": "Wedding deleted",
+      "restored": "Wedding restored",
+      "archived": "Wedding archived",
+      "unarchived": "Wedding unarchived",
+      "created": "Wedding created",
+      "updated": "Wedding updated"
+    }
+  },
+  "gifts": {
+    "title": "Gifts",
+    "add": "Add gift",
+    "addTitle": "Add gift",
+    "editTitle": "Edit gift",
+    "empty": "No gifts recorded yet",
+    "emptyBody": "Add the first gift for this wedding.",
+    "emptyFiltered": "No gifts match this search",
+    "emptyFilteredBody": "Try a different name, type, or currency.",
+    "searchPlaceholder": "Search by name or description",
+    "recordedBy": "Recorded by {name}",
+    "deletedBadge": "Deleted",
+    "fields": {
+      "giverName": "Who gave it",
+      "giverNamePlaceholder": "Full name",
+      "giftType": "Gift type",
+      "giftTypePlaceholder": "Choose a type",
+      "amount": "Amount",
+      "currency": "Currency",
+      "currencyPlaceholder": "Choose a currency",
+      "weight": "Weight or quantity",
+      "unit": "Unit",
+      "unitPlaceholder": "kg, head, pieces…",
+      "description": "What was given",
+      "descriptionPlaceholder": "e.g. Refrigerator, gold ring",
+      "giftDate": "Date given",
+      "notes": "Notes"
+    },
+    "filters": {
+      "allTypes": "All types",
+      "allCurrencies": "All currencies",
+      "showDeleted": "Show deleted"
+    },
+    "sort": {
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "highest_amount": "Highest amount",
+      "lowest_amount": "Lowest amount",
+      "alphabetical": "A–Z"
+    },
+    "actions": {
+      "deleteTitle": "Delete this gift?",
+      "deleteBody": "It will be hidden from the list. Nothing is erased — you can restore it at any time.",
+      "restoreTitle": "Restore this gift?",
+      "restoreBody": "It will reappear in this wedding's gift list.",
+      "deleted": "Gift deleted",
+      "restored": "Gift restored",
+      "created": "Gift added",
+      "updated": "Gift updated"
+    }
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search a person, wedding, or year",
+    "hint": "Search across every wedding by person's name, gift type, or year.",
+    "eventsSection": "Weddings",
+    "giftsSection": "Gifts",
+    "noResults": "Nothing found for “{query}”",
+    "noResultsBody": "Check the spelling, or try just part of the name.",
+    "resultCount": "{count, plural, =0 {No results} one {# result} other {# results}}"
+  },
+  "activity": {
+    "action": {
+      "INSERT": "created",
+      "UPDATE": "updated",
+      "DELETE": "deleted",
+      "RESTORE": "restored"
+    },
+    "entity": {
+      "events": "a wedding",
+      "gifts": "a gift",
+      "gift_types": "a gift type",
+      "currencies": "a currency",
+      "user_roles": "a role",
+      "roles": "a role",
+      "settings": "a setting",
+      "attachments": "an attachment"
+    },
+    "summary": "{name} {action} {entity}",
+    "unknownUser": "Someone",
+    "reason": "Reason: {reason}"
+  },
+  "realtime": {
+    "live": "Live",
+    "connecting": "Connecting…",
+    "error": "Offline — showing the last loaded data"
+  },
+  "validation": {
+    "titleRequired": "Give this wedding a title",
+    "titleTooLong": "Keep the title under 200 characters",
+    "yearRequired": "Enter the year",
+    "yearInvalid": "Enter a whole year, like 2024",
+    "yearOutOfRange": "Enter a year between 1900 and 2100",
+    "dateInvalid": "That isn't a valid date",
+    "dateYearMismatch": "This date isn't in the year you entered",
+    "giverNameRequired": "Enter who gave the gift",
+    "giverNameTooLong": "Keep the name under 200 characters",
+    "giftTypeRequired": "Choose a gift type",
+    "amountRequired": "Enter the amount",
+    "currencyRequired": "Choose a currency",
+    "weightRequired": "Enter the weight or quantity",
+    "unitRequired": "Add a unit, like kg",
+    "descriptionRequired": "Describe what was given",
+    "giftDateRequired": "Enter the date",
+    "numberInvalid": "Enter a number",
+    "numberNegative": "This can't be negative"
   },
   "errors": {
     "genericTitle": "Something went wrong",
     "genericBody": "An unexpected error occurred. You can try again.",
     "notFoundTitle": "Page not found",
     "notFoundBody": "The page you're looking for doesn't exist or has moved.",
-    "goHome": "Go to Dashboard"
+    "goHome": "Go to Dashboard",
+    "eventNotFoundTitle": "Wedding not found",
+    "eventNotFoundBody": "It may have been deleted, or you may not have access to it.",
+    "backToEvents": "Back to events",
+    "forbidden": "Only the registry admin can do that",
+    "unauthenticated": "Please reopen the app from Telegram",
+    "not_found": "That record no longer exists",
+    "validation": "Please check the highlighted fields",
+    "conflict": "That already exists",
+    "unknown": "Something went wrong. Please try again.",
+    "network": "Can't reach the server. Check your connection."
   }
 }

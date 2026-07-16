@@ -6,13 +6,15 @@ export interface NavItem {
   id: "dashboard" | "events" | "search" | "profile";
   href: string;
   icon: ComponentType<{ className?: string; strokeWidth?: number }>;
-  /** Phase 1 ships Dashboard only; the rest render disabled until built. */
+  /** Renders disabled until the destination exists. */
   enabled: boolean;
 }
 
 export const navItems: NavItem[] = [
   { id: "dashboard", href: "/dashboard", icon: LayoutGrid, enabled: true },
-  { id: "events", href: "/events", icon: CalendarHeart, enabled: false },
-  { id: "search", href: "/search", icon: Search, enabled: false },
+  { id: "events", href: "/events", icon: CalendarHeart, enabled: true },
+  { id: "search", href: "/search", icon: Search, enabled: true },
+  // Profile is not built yet; shown disabled rather than hidden so the tab bar
+  // does not reflow once it lands.
   { id: "profile", href: "/profile", icon: User, enabled: false },
 ];

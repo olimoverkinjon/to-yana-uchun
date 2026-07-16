@@ -1,14 +1,6 @@
 /**
  * Generated from supabase/migrations/*.sql — do not hand-edit.
- *
- * Regenerate against a real project once one exists:
- *   npx supabase gen types typescript --project-id <ref> > src/lib/supabase/types.ts
- *
- * This copy was generated against a disposable local Postgres instance with
- * every migration applied (Docker/the Supabase CLI's local dev stack were
- * unavailable in the environment this was built in — see the Phase 2 notes
- * for how it was verified instead), so it reflects the real, tested schema,
- * not a hand-written approximation.
+ * Regenerate with: npm run db:types
  */
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
@@ -97,6 +89,13 @@ export type Database = {
           uploaded_by?: string;
         };
         Relationships: [
+          {
+            foreignKeyName: "attachments_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "event_summaries";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "attachments_event_id_fkey";
             columns: ["event_id"];
@@ -427,6 +426,13 @@ export type Database = {
             foreignKeyName: "gifts_event_id_fkey";
             columns: ["event_id"];
             isOneToOne: false;
+            referencedRelation: "event_summaries";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "gifts_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
             referencedRelation: "events";
             referencedColumns: ["id"];
           },
@@ -637,6 +643,13 @@ export type Database = {
             foreignKeyName: "gifts_event_id_fkey";
             columns: ["event_id"];
             isOneToOne: false;
+            referencedRelation: "event_summaries";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "gifts_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
             referencedRelation: "events";
             referencedColumns: ["id"];
           },
@@ -656,7 +669,50 @@ export type Database = {
             foreignKeyName: "gifts_event_id_fkey";
             columns: ["event_id"];
             isOneToOne: false;
+            referencedRelation: "event_summaries";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "gifts_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
             referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      event_summaries: {
+        Row: {
+          bride_name: string | null;
+          cover_image: string | null;
+          created_at: string | null;
+          created_by: string | null;
+          deleted_at: string | null;
+          description: string | null;
+          event_date: string | null;
+          event_year: number | null;
+          gift_count: number | null;
+          groom_name: string | null;
+          id: string | null;
+          location: string | null;
+          status: string | null;
+          title: string | null;
+          updated_at: string | null;
+          updated_by: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "events_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "events_updated_by_fkey";
+            columns: ["updated_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
             referencedColumns: ["id"];
           },
         ];
@@ -686,9 +742,207 @@ export type Database = {
       };
     };
     Functions: {
+      create_event: {
+        Args: {
+          p_bride_name?: string;
+          p_browser?: string;
+          p_cover_image?: string;
+          p_description?: string;
+          p_event_date?: string;
+          p_event_year: number;
+          p_groom_name?: string;
+          p_ip_address?: string;
+          p_location?: string;
+          p_os?: string;
+          p_reason?: string;
+          p_status?: string;
+          p_title: string;
+          p_user_agent?: string;
+        };
+        Returns: {
+          bride_name: string | null;
+          cover_image: string | null;
+          created_at: string;
+          created_by: string;
+          deleted_at: string | null;
+          description: string | null;
+          event_date: string | null;
+          event_year: number;
+          groom_name: string | null;
+          id: string;
+          location: string | null;
+          search_vector: unknown;
+          status: string;
+          title: string;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "events";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      create_gift: {
+        Args: {
+          p_amount?: number;
+          p_browser?: string;
+          p_currency_id?: string;
+          p_description?: string;
+          p_event_id: string;
+          p_gift_date?: string;
+          p_gift_type_id: string;
+          p_giver_name: string;
+          p_ip_address?: string;
+          p_notes?: string;
+          p_os?: string;
+          p_reason?: string;
+          p_unit?: string;
+          p_user_agent?: string;
+          p_weight?: number;
+        };
+        Returns: {
+          amount: number | null;
+          created_at: string;
+          created_by: string;
+          currency_id: string | null;
+          deleted_at: string | null;
+          description: string | null;
+          event_id: string;
+          gift_date: string;
+          gift_type_id: string;
+          giver_name: string;
+          id: string;
+          notes: string | null;
+          search_vector: unknown;
+          unit: string | null;
+          updated_at: string;
+          updated_by: string | null;
+          weight: number | null;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "gifts";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       has_role: { Args: { p_role_name: string }; Returns: boolean };
       is_super_admin: { Args: never; Returns: boolean };
       is_viewer_or_above: { Args: never; Returns: boolean };
+      my_permissions: {
+        Args: never;
+        Returns: {
+          is_super_admin: boolean;
+          is_viewer_or_above: boolean;
+          roles: string[];
+        }[];
+      };
+      restore_event: {
+        Args: {
+          p_browser?: string;
+          p_id: string;
+          p_ip_address?: string;
+          p_os?: string;
+          p_reason?: string;
+          p_user_agent?: string;
+        };
+        Returns: {
+          bride_name: string | null;
+          cover_image: string | null;
+          created_at: string;
+          created_by: string;
+          deleted_at: string | null;
+          description: string | null;
+          event_date: string | null;
+          event_year: number;
+          groom_name: string | null;
+          id: string;
+          location: string | null;
+          search_vector: unknown;
+          status: string;
+          title: string;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "events";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      restore_gift: {
+        Args: {
+          p_browser?: string;
+          p_id: string;
+          p_ip_address?: string;
+          p_os?: string;
+          p_reason?: string;
+          p_user_agent?: string;
+        };
+        Returns: {
+          amount: number | null;
+          created_at: string;
+          created_by: string;
+          currency_id: string | null;
+          deleted_at: string | null;
+          description: string | null;
+          event_id: string;
+          gift_date: string;
+          gift_type_id: string;
+          giver_name: string;
+          id: string;
+          notes: string | null;
+          search_vector: unknown;
+          unit: string | null;
+          updated_at: string;
+          updated_by: string | null;
+          weight: number | null;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "gifts";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      set_event_status: {
+        Args: {
+          p_browser?: string;
+          p_id: string;
+          p_ip_address?: string;
+          p_os?: string;
+          p_reason?: string;
+          p_status: string;
+          p_user_agent?: string;
+        };
+        Returns: {
+          bride_name: string | null;
+          cover_image: string | null;
+          created_at: string;
+          created_by: string;
+          deleted_at: string | null;
+          description: string | null;
+          event_date: string | null;
+          event_year: number;
+          groom_name: string | null;
+          id: string;
+          location: string | null;
+          search_vector: unknown;
+          status: string;
+          title: string;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "events";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       set_request_context: {
         Args: {
           p_browser?: string;
@@ -699,9 +953,175 @@ export type Database = {
         };
         Returns: undefined;
       };
+      set_request_context_from_text: {
+        Args: {
+          p_browser?: string;
+          p_ip_address?: string;
+          p_os?: string;
+          p_reason?: string;
+          p_user_agent?: string;
+        };
+        Returns: undefined;
+      };
+      soft_delete_event: {
+        Args: {
+          p_browser?: string;
+          p_id: string;
+          p_ip_address?: string;
+          p_os?: string;
+          p_reason?: string;
+          p_user_agent?: string;
+        };
+        Returns: {
+          bride_name: string | null;
+          cover_image: string | null;
+          created_at: string;
+          created_by: string;
+          deleted_at: string | null;
+          description: string | null;
+          event_date: string | null;
+          event_year: number;
+          groom_name: string | null;
+          id: string;
+          location: string | null;
+          search_vector: unknown;
+          status: string;
+          title: string;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "events";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      soft_delete_gift: {
+        Args: {
+          p_browser?: string;
+          p_id: string;
+          p_ip_address?: string;
+          p_os?: string;
+          p_reason?: string;
+          p_user_agent?: string;
+        };
+        Returns: {
+          amount: number | null;
+          created_at: string;
+          created_by: string;
+          currency_id: string | null;
+          deleted_at: string | null;
+          description: string | null;
+          event_id: string;
+          gift_date: string;
+          gift_type_id: string;
+          giver_name: string;
+          id: string;
+          notes: string | null;
+          search_vector: unknown;
+          unit: string | null;
+          updated_at: string;
+          updated_by: string | null;
+          weight: number | null;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "gifts";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       touch_profile_last_seen: {
         Args: { p_profile_id: string };
         Returns: undefined;
+      };
+      update_event: {
+        Args: {
+          p_bride_name: string;
+          p_browser?: string;
+          p_cover_image: string;
+          p_description: string;
+          p_event_date: string;
+          p_event_year: number;
+          p_groom_name: string;
+          p_id: string;
+          p_ip_address?: string;
+          p_location: string;
+          p_os?: string;
+          p_reason?: string;
+          p_status: string;
+          p_title: string;
+          p_user_agent?: string;
+        };
+        Returns: {
+          bride_name: string | null;
+          cover_image: string | null;
+          created_at: string;
+          created_by: string;
+          deleted_at: string | null;
+          description: string | null;
+          event_date: string | null;
+          event_year: number;
+          groom_name: string | null;
+          id: string;
+          location: string | null;
+          search_vector: unknown;
+          status: string;
+          title: string;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "events";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      update_gift: {
+        Args: {
+          p_amount: number;
+          p_browser?: string;
+          p_currency_id: string;
+          p_description: string;
+          p_gift_date: string;
+          p_gift_type_id: string;
+          p_giver_name: string;
+          p_id: string;
+          p_ip_address?: string;
+          p_notes: string;
+          p_os?: string;
+          p_reason?: string;
+          p_unit: string;
+          p_user_agent?: string;
+          p_weight: number;
+        };
+        Returns: {
+          amount: number | null;
+          created_at: string;
+          created_by: string;
+          currency_id: string | null;
+          deleted_at: string | null;
+          description: string | null;
+          event_id: string;
+          gift_date: string;
+          gift_type_id: string;
+          giver_name: string;
+          id: string;
+          notes: string | null;
+          search_vector: unknown;
+          unit: string | null;
+          updated_at: string;
+          updated_by: string | null;
+          weight: number | null;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "gifts";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
       };
       upsert_telegram_profile: {
         Args: {
@@ -727,31 +1147,132 @@ export type Database = {
           updated_at: string;
           username: string | null;
         };
+        SetofOptions: {
+          from: "*";
+          to: "profiles";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
       };
     };
-    Enums: { [_ in never]: never };
-    CompositeTypes: { [_ in never]: never };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
   };
 };
 
-type DefaultSchema = Database["public"];
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">;
 
-export type Tables<TableName extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])> =
-  (DefaultSchema["Tables"] & DefaultSchema["Views"])[TableName] extends { Row: infer R } ? R : never;
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">];
 
-export type TablesInsert<TableName extends keyof DefaultSchema["Tables"]> = DefaultSchema["Tables"][TableName] extends {
-  Insert: infer I;
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    keyof (DefaultSchema["Tables"] & DefaultSchema["Views"]) | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
 }
-  ? I
-  : never;
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R;
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] & DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R;
+      }
+      ? R
+      : never
+    : never;
 
-export type TablesUpdate<TableName extends keyof DefaultSchema["Tables"]> = DefaultSchema["Tables"][TableName] extends {
-  Update: infer U;
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
 }
-  ? U
-  : never;
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I;
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I;
+      }
+      ? I
+      : never
+    : never;
 
-export type FunctionArgs<FnName extends keyof DefaultSchema["Functions"]> = DefaultSchema["Functions"][FnName]["Args"];
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U;
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U;
+      }
+      ? U
+      : never
+    : never;
 
-export type FunctionReturns<FnName extends keyof DefaultSchema["Functions"]> =
-  DefaultSchema["Functions"][FnName]["Returns"];
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"] | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never) = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never;
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    keyof DefaultSchema["CompositeTypes"] | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never) = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never;
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const;

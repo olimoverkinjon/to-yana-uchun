@@ -10,6 +10,9 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "db:test": "node scripts/db/test.mjs",
+    "db:types": "node scripts/db/generate-types.mjs",
+    "i18n:check": "node scripts/i18n/check-messages.mjs",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -49,11 +52,13 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@supabase/postgres-meta": "^0.96.6",
     "@tailwindcss/postcss": "^4",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "embedded-postgres": "^18.4.0-beta.17",
     "eslint": "^9",
     "eslint-config-next": "^15.5.20",
     "husky": "^9.1.7",

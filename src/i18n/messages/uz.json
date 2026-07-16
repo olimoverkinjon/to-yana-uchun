@@ -5,14 +5,35 @@
     "retry": "Qayta urinish",
     "back": "Orqaga",
     "save": "Saqlash",
-    "cancel": "Bekor qilish"
+    "cancel": "Bekor qilish",
+    "edit": "Tahrirlash",
+    "delete": "O'chirish",
+    "restore": "Tiklash",
+    "archive": "Arxivlash",
+    "unarchive": "Arxivdan chiqarish",
+    "search": "Qidirish",
+    "filter": "Saralash",
+    "sort": "Tartiblash",
+    "clear": "Tozalash",
+    "clearAll": "Hammasini tozalash",
+    "loadMore": "Yana yuklash",
+    "showing": "{total} tadan {count} tasi",
+    "optional": "Ixtiyoriy",
+    "none": "Yo'q",
+    "copy": "Havolani nusxalash",
+    "copied": "Havola nusxalandi",
+    "share": "Ulashish",
+    "reasonLabel": "O'zgartirish sababi",
+    "reasonPlaceholder": "Tarixda saqlanadi, sababini hamma ko'radi",
+    "confirm": "Tasdiqlash",
+    "saving": "Saqlanmoqda…"
   },
   "splash": {
     "tagline": "Har bir sovg'a abadiy xotirada saqlanadi"
   },
   "nav": {
     "dashboard": "Bosh sahifa",
-    "events": "Tadbirlar",
+    "events": "To'ylar",
     "search": "Qidiruv",
     "profile": "Profil"
   },
@@ -26,29 +47,219 @@
     "title": "Boshqaruv paneli",
     "greeting": "Xush kelibsiz, {name}",
     "stats": {
-      "totalEvents": "Jami tadbirlar",
+      "totalEvents": "Jami to'ylar",
       "totalGifts": "Jami sovg'alar",
       "totalMoney": "Jami pul mablag'i",
+      "totalGuests": "Jami mehmonlar",
       "recentActivity": "So'nggi harakatlar"
     },
     "emptyActivity": "Hozircha hech narsa qayd etilmagan",
-    "activity": {
-      "gift_added": "{name} {target} uchun sovg'a qo'shdi",
-      "gift_updated": "{name} {target} sovg'asini tahrirladi",
-      "event_created": "{name} {target} tadbirini yaratdi"
-    }
+    "viewAll": "Hammasini ko'rish"
   },
   "auth": {
     "verifying": "Telegram hisobingiz tekshirilmoqda…",
     "failedTitle": "Telegram hisobingizni tasdiqlab bo'lmadi",
     "failedBody": "Iltimos, ilovani Telegram ichidan qayta oching.",
-    "retryButton": "Qayta urinish"
+    "retryButton": "Qayta urinish",
+    "noAccessTitle": "Sizda hali ruxsat yo'q",
+    "noAccessBody": "Daftarni yuritayotgan oila a'zosidan sizni qo'shishini so'rang. Qo'shgach, ilovani qayta oching."
+  },
+  "events": {
+    "title": "To'ylar",
+    "subtitle": "Har bir to'y va unga yozilgan har bir sovg'a",
+    "create": "Yangi to'y",
+    "createTitle": "Yangi to'y",
+    "editTitle": "To'yni tahrirlash",
+    "empty": "Hozircha to'y qayd etilmagan",
+    "emptyBody": "Sovg'alarni yozishni boshlash uchun birinchi to'yni qo'shing.",
+    "emptyFiltered": "Bu shartlarga mos to'y topilmadi",
+    "emptyFilteredBody": "Boshqa yil yoki boshqa so'z bilan urinib ko'ring.",
+    "giftCount": "{count, plural, =0 {Sovg'a yo'q} other {# ta sovg'a}}",
+    "updated": "{time} yangilandi",
+    "couple": "{bride} va {groom}",
+    "status": {
+      "draft": "Qoralama",
+      "active": "Faol",
+      "archived": "Arxivda",
+      "deleted": "O'chirilgan"
+    },
+    "fields": {
+      "title": "To'y nomi",
+      "titlePlaceholder": "masalan: Erkinjon to'yi",
+      "brideName": "Kelin ismi",
+      "groomName": "Kuyov ismi",
+      "description": "Izoh",
+      "eventDate": "To'y sanasi",
+      "eventDateHint": "Faqat yilni bilsangiz, bo'sh qoldiring",
+      "eventYear": "Yil",
+      "location": "Manzil",
+      "locationPlaceholder": "masalan: Andijon",
+      "coverImage": "Muqova rasm havolasi",
+      "status": "Holati"
+    },
+    "filters": {
+      "allYears": "Barcha yillar",
+      "allStatuses": "Barcha holatlar",
+      "showDeleted": "O'chirilganlarni ko'rsatish",
+      "searchPlaceholder": "To'y yoki ism bo'yicha qidirish"
+    },
+    "sort": {
+      "newest": "Avval yangilari",
+      "oldest": "Avval eskilari",
+      "alphabetical": "A–Z",
+      "recently_updated": "Yaqinda yangilangan"
+    },
+    "details": {
+      "overview": "Umumiy",
+      "gifts": "Sovg'alar",
+      "activity": "Harakatlar",
+      "totalGifts": "Jami sovg'alar",
+      "totalGuests": "Mehmonlar",
+      "cashTotals": "Kelgan pul",
+      "otherTotals": "Boshqa sovg'alar",
+      "noCash": "Pul sovg'asi qayd etilmagan",
+      "noTotals": "Hozircha sovg'a qayd etilmagan",
+      "auditHistory": "O'zgarishlar tarixi",
+      "auditEmpty": "O'zgarish qayd etilmagan",
+      "adminOnly": "Faqat daftar boshqaruvchisiga ko'rinadi"
+    },
+    "actions": {
+      "deleteTitle": "Bu to'y o'chirilsinmi?",
+      "deleteBody": "U sovg'alari bilan birga ro'yxatdan yashiriladi. Hech narsa yo'qolmaydi — istalgan vaqtda tiklashingiz mumkin.",
+      "restoreTitle": "Bu to'y tiklansinmi?",
+      "restoreBody": "U sovg'alari bilan birga ro'yxatga qaytadi.",
+      "archiveTitle": "Bu to'y arxivlansinmi?",
+      "archiveBody": "Hammasi joyida qoladi va qidiruvda topiladi, faqat asosiy ro'yxatda ko'rinmaydi.",
+      "deleted": "To'y o'chirildi",
+      "restored": "To'y tiklandi",
+      "archived": "To'y arxivlandi",
+      "unarchived": "To'y arxivdan chiqarildi",
+      "created": "To'y qo'shildi",
+      "updated": "To'y yangilandi"
+    }
+  },
+  "gifts": {
+    "title": "Sovg'alar",
+    "add": "Sovg'a qo'shish",
+    "addTitle": "Sovg'a qo'shish",
+    "editTitle": "Sovg'ani tahrirlash",
+    "empty": "Hozircha sovg'a qayd etilmagan",
+    "emptyBody": "Bu to'yga birinchi sovg'ani qo'shing.",
+    "emptyFiltered": "Bu qidiruvga mos sovg'a topilmadi",
+    "emptyFilteredBody": "Boshqa ism, tur yoki valyuta bilan urinib ko'ring.",
+    "searchPlaceholder": "Ism yoki izoh bo'yicha qidirish",
+    "recordedBy": "{name} yozgan",
+    "deletedBadge": "O'chirilgan",
+    "fields": {
+      "giverName": "Kim berdi",
+      "giverNamePlaceholder": "To'liq ismi",
+      "giftType": "Sovg'a turi",
+      "giftTypePlaceholder": "Turini tanlang",
+      "amount": "Miqdori",
+      "currency": "Valyuta",
+      "currencyPlaceholder": "Valyutani tanlang",
+      "weight": "Og'irligi yoki soni",
+      "unit": "O'lchov",
+      "unitPlaceholder": "kg, bosh, dona…",
+      "description": "Nima berildi",
+      "descriptionPlaceholder": "masalan: Muzlatgich, oltin uzuk",
+      "giftDate": "Berilgan sana",
+      "notes": "Qo'shimcha"
+    },
+    "filters": {
+      "allTypes": "Barcha turlar",
+      "allCurrencies": "Barcha valyutalar",
+      "showDeleted": "O'chirilganlarni ko'rsatish"
+    },
+    "sort": {
+      "newest": "Avval yangilari",
+      "oldest": "Avval eskilari",
+      "highest_amount": "Eng ko'p miqdor",
+      "lowest_amount": "Eng kam miqdor",
+      "alphabetical": "A–Z"
+    },
+    "actions": {
+      "deleteTitle": "Bu sovg'a o'chirilsinmi?",
+      "deleteBody": "U ro'yxatdan yashiriladi. Hech narsa yo'qolmaydi — istalgan vaqtda tiklashingiz mumkin.",
+      "restoreTitle": "Bu sovg'a tiklansinmi?",
+      "restoreBody": "U shu to'yning sovg'alar ro'yxatiga qaytadi.",
+      "deleted": "Sovg'a o'chirildi",
+      "restored": "Sovg'a tiklandi",
+      "created": "Sovg'a qo'shildi",
+      "updated": "Sovg'a yangilandi"
+    }
+  },
+  "search": {
+    "title": "Qidiruv",
+    "placeholder": "Ism, to'y yoki yil bo'yicha qidiring",
+    "hint": "Barcha to'ylar bo'ylab ism, sovg'a turi yoki yil bo'yicha qidiring.",
+    "eventsSection": "To'ylar",
+    "giftsSection": "Sovg'alar",
+    "noResults": "“{query}” bo'yicha hech narsa topilmadi",
+    "noResultsBody": "Imloni tekshiring yoki ismning bir qismini yozib ko'ring.",
+    "resultCount": "{count, plural, =0 {Natija yo'q} other {# ta natija}}"
+  },
+  "activity": {
+    "action": {
+      "INSERT": "qo'shdi",
+      "UPDATE": "yangiladi",
+      "DELETE": "o'chirdi",
+      "RESTORE": "tikladi"
+    },
+    "entity": {
+      "events": "to'yni",
+      "gifts": "sovg'ani",
+      "gift_types": "sovg'a turini",
+      "currencies": "valyutani",
+      "user_roles": "rolni",
+      "roles": "rolni",
+      "settings": "sozlamani",
+      "attachments": "ilovani"
+    },
+    "summary": "{name} {entity} {action}",
+    "unknownUser": "Kimdir",
+    "reason": "Sababi: {reason}"
+  },
+  "realtime": {
+    "live": "Jonli",
+    "connecting": "Ulanmoqda…",
+    "error": "Aloqa yo'q — oxirgi ma'lumot ko'rsatilmoqda"
+  },
+  "validation": {
+    "titleRequired": "To'yga nom bering",
+    "titleTooLong": "Nom 200 belgidan oshmasin",
+    "yearRequired": "Yilni kiriting",
+    "yearInvalid": "Butun yil kiriting, masalan 2024",
+    "yearOutOfRange": "1900 va 2100 orasidagi yilni kiriting",
+    "dateInvalid": "Bu sana noto'g'ri",
+    "dateYearMismatch": "Bu sana siz kiritgan yilga to'g'ri kelmayapti",
+    "giverNameRequired": "Kim berganini yozing",
+    "giverNameTooLong": "Ism 200 belgidan oshmasin",
+    "giftTypeRequired": "Sovg'a turini tanlang",
+    "amountRequired": "Miqdorini kiriting",
+    "currencyRequired": "Valyutani tanlang",
+    "weightRequired": "Og'irligi yoki sonini kiriting",
+    "unitRequired": "O'lchov qo'shing, masalan kg",
+    "descriptionRequired": "Nima berilganini yozing",
+    "giftDateRequired": "Sanani kiriting",
+    "numberInvalid": "Raqam kiriting",
+    "numberNegative": "Bu manfiy bo'lishi mumkin emas"
   },
   "errors": {
     "genericTitle": "Nimadir xato ketdi",
     "genericBody": "Kutilmagan xatolik yuz berdi. Qayta urinib ko'rishingiz mumkin.",
     "notFoundTitle": "Sahifa topilmadi",
     "notFoundBody": "Siz qidirayotgan sahifa mavjud emas yoki ko'chirilgan.",
-    "goHome": "Bosh sahifaga qaytish"
+    "goHome": "Bosh sahifaga qaytish",
+    "eventNotFoundTitle": "To'y topilmadi",
+    "eventNotFoundBody": "U o'chirilgan bo'lishi yoki sizda ruxsat bo'lmasligi mumkin.",
+    "backToEvents": "To'ylarga qaytish",
+    "forbidden": "Buni faqat daftar boshqaruvchisi qila oladi",
+    "unauthenticated": "Iltimos, ilovani Telegram ichidan qayta oching",
+    "not_found": "Bu yozuv endi mavjud emas",
+    "validation": "Belgilangan maydonlarni tekshiring",
+    "conflict": "Bu allaqachon mavjud",
+    "unknown": "Xatolik yuz berdi. Qayta urinib ko'ring.",
+    "network": "Serverga ulanib bo'lmadi. Aloqani tekshiring."
   }
 }

@@ -27,8 +27,12 @@ export function AuthGate() {
   const authMutation = useTelegramAuthMutation();
   const attempted = useRef(false);
 
+  // The query always resolves to an object — `{ user: null }` for a signed-out
+  // visitor — so signed-in-ness is the presence of `user`, not of `data`.
+  const signedInUser = session.data?.user ?? null;
+
   useEffect(() => {
-    if (!isReady || session.isLoading || session.data || attempted.current) return;
+    if (!isReady || session.isLoading || signedInUser || attempted.current) return;
     if (!isTelegramEnvironment) return;
 
     attempted.current = true;
@@ -42,13 +46,13 @@ export function AuthGate() {
     if (rawInitData) {
       authMutation.mutate(rawInitData);
     }
-  }, [isReady, isTelegramEnvironment, session.isLoading, session.data, authMutation]);
+  }, [isReady, isTelegramEnvironment, session.isLoading, signedInUser, authMutation]);
 
   useEffect(() => {
-    if (session.data) {
+    if (signedInUser) {
       router.replace("/dashboard");
     }
-  }, [session.data, router]);
+  }, [signedInUser, router]);
 
   const hasFailed = (isReady && !isTelegramEnvironment) || authMutation.isError;
 

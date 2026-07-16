@@ -1,8 +1,20 @@
 import { NextResponse } from "next/server";
 
+import { getPermissions } from "@/features/auth/api/permissions";
 import { getSession } from "@/features/auth/api/session";
 
+/**
+ * The client's single source of truth for "who am I and what may I do".
+ * Permissions ride along with the session rather than sitting behind their
+ * own endpoint, so a client never renders with one and not the other.
+ */
 export async function GET() {
   const session = await getSession();
-  return NextResponse.json({ user: session });
+
+  if (!session) {
+    return NextResponse.json({ user: null, permissions: null });
+  }
+
+  const permissions = await getPermissions();
+  return NextResponse.json({ user: session, permissions });
 }
