@@ -12,12 +12,23 @@ interface TelegramUpdate {
     from?: { id?: number; first_name?: string };
     text?: string;
   };
+  callback_query?: {
+    id: string;
+    data?: string;
+    from?: { id?: number };
+    message?: { chat?: { id?: number } };
+  };
 }
 
 type InlineKeyboard = Array<Array<Record<string, unknown>>>;
 
 export async function POST(request: Request) {
   const update = (await request.json().catch(() => null)) as TelegramUpdate | null;
+  if (update?.callback_query) {
+    await handleCallbackQuery(update.callback_query);
+    return NextResponse.json({ ok: true }, { headers: NO_STORE });
+  }
+
   const chatId = update?.message?.chat?.id;
   if (!chatId) return NextResponse.json({ ok: true }, { headers: NO_STORE });
 
@@ -53,7 +64,10 @@ async function sendWelcome(chatId: number, inviteCode?: string, firstName?: stri
 
   await sendMessage(chatId, text, [
     [{ text: inviteCode ? "Guruhga qo'shilish" : "To'y Daftarini ochish", web_app: { url: url.toString() } }],
-    [{ text: "Yordam", callback_data: "help_disabled" }],
+    [
+      { text: "Invite link olish", callback_data: "invite" },
+      { text: "Yordam", callback_data: "help" },
+    ],
   ]);
 }
 
@@ -111,7 +125,45 @@ async function sendInviteLink(chatId: number, telegramId?: number) {
   await sendMessage(
     chatId,
     [`${group.name} uchun invite link:`, "", link, "", "Shu linkni guruh a'zolariga yuboring."].join("\n"),
+    [[{ text: "To'y Daftarini ochish", web_app: { url: appUrl().toString() } }]],
   );
+}
+
+async function handleCallbackQuery(query: NonNullable<TelegramUpdate["callback_query"]>) {
+  const chatId = query.message?.chat?.id;
+  if (!chatId) {
+    await answerCallbackQuery(query.id);
+    return;
+  }
+
+  if (query.data === "invite") {
+    await answerCallbackQuery(query.id, "Invite link tayyorlanmoqda...");
+    await sendInviteLink(chatId, query.from?.id);
+    return;
+  }
+
+  if (query.data === "help") {
+    await answerCallbackQuery(query.id);
+    await sendHelp(chatId);
+    return;
+  }
+
+  await answerCallbackQuery(query.id);
+}
+
+async function answerCallbackQuery(callbackQueryId: string, text?: string) {
+  const response = await fetch(`https://api.telegram.org/bot${serverEnv().TELEGRAM_BOT_TOKEN}/answerCallbackQuery`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      callback_query_id: callbackQueryId,
+      text,
+    }),
+  });
+
+  if (!response.ok) {
+    console.error("[telegram:webhook] answerCallbackQuery failed", await response.text());
+  }
 }
 
 async function sendMessage(chatId: number, text: string, inlineKeyboard: InlineKeyboard = defaultKeyboard()) {
@@ -132,7 +184,13 @@ async function sendMessage(chatId: number, text: string, inlineKeyboard: InlineK
 }
 
 function defaultKeyboard(): InlineKeyboard {
-  return [[{ text: "To'y Daftarini ochish", web_app: { url: appUrl().toString() } }]];
+  return [
+    [{ text: "To'y Daftarini ochish", web_app: { url: appUrl().toString() } }],
+    [
+      { text: "Invite link olish", callback_data: "invite" },
+      { text: "Yordam", callback_data: "help" },
+    ],
+  ];
 }
 
 function appUrl() {
