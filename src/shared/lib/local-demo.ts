@@ -1,3 +1,3 @@
 export function isLocalDemoMode() {
-  return process.env.NEXT_PUBLIC_LOCAL_DEMO === "true";
+  return process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_LOCAL_DEMO === "true";
 }

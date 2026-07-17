@@ -38,10 +38,13 @@ export function AuthGate() {
       router.replace("/dashboard");
       return;
     }
-    if (!isReady || session.isLoading || signedInUser || attempted.current) return;
-    if (!isTelegramEnvironment) return;
+    if (!isReady || session.isLoading || attempted.current) return;
 
-    attempted.current = true;
+    if (!isTelegramEnvironment) {
+      if (signedInUser) router.replace("/dashboard");
+      return;
+    }
+
     let rawInitData: string | undefined;
     try {
       rawInitData = retrieveRawInitData();
@@ -49,19 +52,31 @@ export function AuthGate() {
       rawInitData = undefined;
     }
 
-    if (rawInitData) {
-      authMutation.mutate(rawInitData);
-    } else {
+    if (!rawInitData) {
+      if (signedInUser) {
+        router.replace("/dashboard");
+        return;
+      }
       setInitDataMissing(true);
+      return;
     }
+
+    const telegramUserId = readTelegramUserId(rawInitData);
+    if (signedInUser && telegramUserId === signedInUser.telegramId) {
+      router.replace("/dashboard");
+      return;
+    }
+
+    attempted.current = true;
+    authMutation.mutate(rawInitData);
   }, [isReady, isTelegramEnvironment, session.isLoading, signedInUser, authMutation, router]);
 
   useEffect(() => {
-    if (signedInUser || authMutation.isSuccess) {
+    if (authMutation.isSuccess) {
       router.replace("/dashboard");
       router.refresh();
     }
-  }, [signedInUser, authMutation.isSuccess, router]);
+  }, [authMutation.isSuccess, router]);
 
   const hasFailed = (isReady && !isTelegramEnvironment) || authMutation.isError || initDataMissing;
 
@@ -88,4 +103,15 @@ export function AuthGate() {
   }
 
   return <SplashScreen />;
+}
+
+function readTelegramUserId(rawInitData: string): number | null {
+  try {
+    const user = new URLSearchParams(rawInitData).get("user");
+    if (!user) return null;
+    const parsed = JSON.parse(user) as { id?: unknown };
+    return typeof parsed.id === "number" ? parsed.id : null;
+  } catch {
+    return null;
+  }
 }
