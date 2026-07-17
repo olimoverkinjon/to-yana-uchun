@@ -75,7 +75,7 @@ export function EventForm({ event, isPending = false, onSubmit, onCancel }: Even
       </FormField>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <FormField form={form} name="brideName" label={t("brideName")}>
+        <FormField form={form} name="brideName" label={t("brideName")} description={t("brideNameHint")}>
           {(field) => <TextInput value={field.value} onChange={field.onChange} onBlur={field.onBlur} />}
         </FormField>
 

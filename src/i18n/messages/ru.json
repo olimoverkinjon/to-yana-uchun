@@ -203,6 +203,7 @@
       "title": "Название свадьбы",
       "titlePlaceholder": "например: Свадьба Эркинжона",
       "brideName": "Имя невесты",
+      "brideNameHint": "Необязательно. Оставьте пустым, если имя невесты не нужно.",
       "groomName": "Имя жениха",
       "description": "Описание",
       "eventDate": "Дата свадьбы",
@@ -266,6 +267,14 @@
     "searchPlaceholder": "Поиск по имени или описанию",
     "recordedBy": "Записал(а) {name}",
     "deletedBadge": "Удалён",
+    "table": {
+      "giver": "Кто дал",
+      "gift": "Что дал",
+      "value": "Сумма",
+      "date": "Дата",
+      "actions": "Действия",
+      "notSpecified": "Подарок"
+    },
     "fields": {
       "giverName": "Кто подарил",
       "giverNamePlaceholder": "Полное имя",

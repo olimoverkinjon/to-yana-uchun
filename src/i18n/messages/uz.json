@@ -203,6 +203,7 @@
       "title": "To'y nomi",
       "titlePlaceholder": "masalan: Erkinjon to'yi",
       "brideName": "Kelin ismi",
+      "brideNameHint": "Majburiy emas. Kerak bo'lmasa bo'sh qoldiring.",
       "groomName": "Kuyov ismi",
       "description": "Izoh",
       "eventDate": "To'y sanasi",
@@ -266,6 +267,14 @@
     "searchPlaceholder": "Ism yoki izoh bo'yicha qidirish",
     "recordedBy": "{name} yozgan",
     "deletedBadge": "O'chirilgan",
+    "table": {
+      "giver": "Kim berdi",
+      "gift": "Nima berdi",
+      "value": "Miqdor",
+      "date": "Sana",
+      "actions": "Amallar",
+      "notSpecified": "Sovg'a"
+    },
     "fields": {
       "giverName": "Kim berdi",
       "giverNamePlaceholder": "To'liq ismi",

@@ -153,19 +153,34 @@ export function GiftList({ eventId, canManage }: GiftListProps) {
             old results are still on screen) — honest that these may be about
             to change, without yanking them away.
           */}
-          <ul className={query.isFetching && !query.isFetchingNextPage ? "opacity-60 transition-opacity" : undefined}>
-            {gifts.map((gift, index) => (
-              <GiftRow
-                key={gift.id}
-                gift={gift}
-                index={index}
-                canManage={canEdit}
-                onEdit={setEditing}
-                onDelete={(target) => setConfirming({ gift: target, action: "delete" })}
-                onRestore={(target) => setConfirming({ gift: target, action: "restore" })}
-              />
-            ))}
-          </ul>
+          <div className="border-border/70 bg-card/80 overflow-hidden rounded-2xl border shadow-sm">
+            <div className="text-muted-foreground bg-muted/35 hidden grid-cols-[minmax(0,1.15fr)_minmax(0,1.35fr)_minmax(7rem,0.8fr)_minmax(6.5rem,0.7fr)_2rem] px-4 py-2.5 text-xs font-medium sm:grid">
+              <span>{t("table.giver")}</span>
+              <span>{t("table.gift")}</span>
+              <span>{t("table.value")}</span>
+              <span>{t("table.date")}</span>
+              <span className="sr-only">{t("table.actions")}</span>
+            </div>
+            <ul
+              className={
+                query.isFetching && !query.isFetchingNextPage
+                  ? "divide-border/70 divide-y opacity-60 transition-opacity"
+                  : "divide-border/70 divide-y"
+              }
+            >
+              {gifts.map((gift, index) => (
+                <GiftRow
+                  key={gift.id}
+                  gift={gift}
+                  index={index}
+                  canManage={canEdit}
+                  onEdit={setEditing}
+                  onDelete={(target) => setConfirming({ gift: target, action: "delete" })}
+                  onRestore={(target) => setConfirming({ gift: target, action: "restore" })}
+                />
+              ))}
+            </ul>
+          </div>
 
           {query.isFetchingNextPage ? <GiftListSkeleton count={3} /> : null}
 
@@ -209,15 +224,20 @@ export function GiftList({ eventId, canManage }: GiftListProps) {
 
 function GiftListSkeleton({ count = 6 }: { count?: number }) {
   return (
-    <div className="space-y-1">
+    <div className="border-border/70 bg-card/80 overflow-hidden rounded-2xl border">
       {Array.from({ length: count }, (_, index) => (
-        <div key={index} className="flex items-center gap-3 px-3 py-3">
-          <Skeleton className="size-9 shrink-0 rounded-full" />
-          <div className="flex-1 space-y-1.5">
-            <Skeleton className="h-3.5 w-2/5" />
-            <Skeleton className="h-3 w-1/3" />
+        <div
+          key={index}
+          className="border-border/70 grid gap-3 border-b px-3 py-3 last:border-b-0 sm:grid-cols-[minmax(0,1.15fr)_minmax(0,1.35fr)_minmax(7rem,0.8fr)_minmax(6.5rem,0.7fr)_2rem] sm:items-center sm:px-4"
+        >
+          <div className="flex items-center gap-2.5">
+            <Skeleton className="size-8 shrink-0 rounded-full sm:size-9" />
+            <Skeleton className="h-4 w-28" />
           </div>
-          <Skeleton className="h-4 w-16" />
+          <Skeleton className="h-4 w-40" />
+          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="hidden size-8 sm:block" />
         </div>
       ))}
     </div>

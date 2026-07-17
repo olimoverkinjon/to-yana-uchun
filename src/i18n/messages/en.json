@@ -203,6 +203,7 @@
       "title": "Wedding title",
       "titlePlaceholder": "e.g. Erkinjon's wedding",
       "brideName": "Bride's name",
+      "brideNameHint": "Optional. Leave empty if this wedding does not need a bride name.",
       "groomName": "Groom's name",
       "description": "Description",
       "eventDate": "Wedding date",
@@ -266,6 +267,14 @@
     "searchPlaceholder": "Search by name or description",
     "recordedBy": "Recorded by {name}",
     "deletedBadge": "Deleted",
+    "table": {
+      "giver": "Giver",
+      "gift": "Gift",
+      "value": "Amount",
+      "date": "Date",
+      "actions": "Actions",
+      "notSpecified": "Gift"
+    },
     "fields": {
       "giverName": "Who gave it",
       "giverNamePlaceholder": "Full name",

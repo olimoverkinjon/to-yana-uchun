@@ -27,14 +27,7 @@ interface GiftRowProps {
   onRestore: (gift: GiftWithRelations) => void;
 }
 
-/**
- * One gift, as a row.
- *
- * The layout is a list rather than a table even on desktop: a gift's shape
- * varies by type — cash has an amount, a cow has a weight, a refrigerator has
- * neither — so a fixed column grid would be mostly empty cells. The value line
- * shows whichever measure that gift actually has.
- */
+/** One gift, as a responsive table row. */
 export function GiftRow({ gift, canManage, index = 0, onEdit, onDelete, onRestore }: GiftRowProps) {
   const t = useTranslations("gifts");
   const tCommon = useTranslations("common");
@@ -53,7 +46,9 @@ export function GiftRow({ gift, canManage, index = 0, onEdit, onDelete, onRestor
       ? formatAmount(gift.amount, gift.currency, locale)
       : gift.weight !== null && gift.weight !== undefined
         ? formatWeight(gift.weight, gift.unit, locale)
-        : (gift.description ?? "—");
+        : "—";
+
+  const giftName = gift.description?.trim() || gift.gift_type?.name || t("table.notSpecified");
 
   return (
     <motion.li
@@ -61,45 +56,50 @@ export function GiftRow({ gift, canManage, index = 0, onEdit, onDelete, onRestor
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: Math.min(index, 8) * 0.02, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
-        "hover:bg-muted/40 group flex items-center gap-3 rounded-xl px-3 py-3 transition-colors",
+        "hover:bg-muted/35 group grid gap-3 px-3 py-3 transition-colors sm:grid-cols-[minmax(0,1.15fr)_minmax(0,1.35fr)_minmax(7rem,0.8fr)_minmax(6.5rem,0.7fr)_2rem] sm:items-center sm:px-4",
         isDeleted && "opacity-55",
-        // The row is live but not yet confirmed by the server; a subtle pulse
-        // is honest about that without blocking the next entry.
         isOptimistic && "animate-pulse",
       )}
     >
-      <Avatar className="size-9 shrink-0">
-        <AvatarFallback className="text-xs font-medium">{initialsOf(gift.giver_name)}</AvatarFallback>
-      </Avatar>
-
-      <div className="min-w-0 flex-1 space-y-0.5">
-        <div className="flex items-center gap-2">
-          <p className="text-foreground truncate text-sm font-medium">{gift.giver_name}</p>
+      <div className="min-w-0">
+        <MobileLabel>{t("table.giver")}</MobileLabel>
+        <div className="flex min-w-0 items-center gap-2.5">
+          <Avatar className="size-8 shrink-0 sm:size-9">
+            <AvatarFallback className="text-xs font-medium">{initialsOf(gift.giver_name)}</AvatarFallback>
+          </Avatar>
+          <p className="text-foreground min-w-0 truncate text-sm font-semibold">{gift.giver_name}</p>
           {isDeleted ? (
             <Badge variant="destructive" className="shrink-0">
               {t("deletedBadge")}
             </Badge>
           ) : null}
         </div>
+      </div>
 
-        <div className="text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
+      <div className="min-w-0">
+        <MobileLabel>{t("table.gift")}</MobileLabel>
+        <p className="text-foreground truncate text-sm font-medium">{giftName}</p>
+        <div className="text-muted-foreground mt-0.5 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
           {gift.gift_type ? <span className="truncate">{gift.gift_type.name}</span> : null}
-          <span aria-hidden>·</span>
-          <span className="tabular-nums">{formatDate(gift.gift_date, locale)}</span>
           {recordedBy ? (
-            <>
-              <span aria-hidden className="hidden sm:inline">
-                ·
-              </span>
-              <span className="hidden truncate sm:inline">{t("recordedBy", { name: recordedBy })}</span>
-            </>
+            <span className="hidden truncate sm:inline">{t("recordedBy", { name: recordedBy })}</span>
           ) : null}
         </div>
       </div>
 
-      <div className="flex shrink-0 items-center gap-1">
-        <span className="text-foreground max-w-[9rem] truncate text-sm font-semibold tabular-nums">{value}</span>
+      <div className="min-w-0">
+        <MobileLabel>{t("table.value")}</MobileLabel>
+        <span className="text-foreground block truncate text-sm font-semibold tabular-nums">{value}</span>
+      </div>
 
+      <div className="min-w-0">
+        <MobileLabel>{t("table.date")}</MobileLabel>
+        <span className="text-muted-foreground block truncate text-sm tabular-nums">
+          {formatDate(gift.gift_date, locale)}
+        </span>
+      </div>
+
+      <div className="flex items-center justify-end">
         {canManage && !isOptimistic ? (
           <DropdownMenu>
             <DropdownMenuTrigger
@@ -107,8 +107,7 @@ export function GiftRow({ gift, canManage, index = 0, onEdit, onDelete, onRestor
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  aria-label={tCommon("edit")}
-                  // Always reachable on touch, where there is no hover.
+                  aria-label={t("table.actions")}
                   className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
                 />
               }
@@ -138,5 +137,13 @@ export function GiftRow({ gift, canManage, index = 0, onEdit, onDelete, onRestor
         ) : null}
       </div>
     </motion.li>
+  );
+}
+
+function MobileLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="text-muted-foreground mb-1 block text-[0.68rem] font-medium tracking-wide uppercase sm:hidden">
+      {children}
+    </span>
   );
 }
