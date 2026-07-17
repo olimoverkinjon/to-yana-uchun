@@ -1,6 +1,5 @@
 "use client";
 
-import { retrieveRawInitData } from "@telegram-apps/sdk-react";
 import { RotateCw } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -13,6 +12,7 @@ import { isLocalDemoMode } from "@/shared/lib/local-demo";
 
 import { useTelegramAuthMutation } from "../hooks/use-telegram-auth";
 import { useSessionQuery } from "../hooks/use-session";
+import { readTelegramInitData } from "../lib/telegram-init-data";
 
 /**
  * The whole of PRD §9 in one component: detect the Telegram user, verify
@@ -40,19 +40,13 @@ export function AuthGate() {
     }
     if (!isReady || session.isLoading || attempted.current) return;
 
-    if (!isTelegramEnvironment) {
-      if (signedInUser) router.replace("/dashboard");
-      return;
-    }
-
-    let rawInitData: string | undefined;
-    try {
-      rawInitData = retrieveRawInitData();
-    } catch {
-      rawInitData = undefined;
-    }
+    const rawInitData = readTelegramInitData();
 
     if (!rawInitData) {
+      if (!isTelegramEnvironment && signedInUser) {
+        router.replace("/dashboard");
+        return;
+      }
       if (signedInUser) {
         router.replace("/dashboard");
         return;
@@ -78,7 +72,7 @@ export function AuthGate() {
     }
   }, [authMutation.isSuccess, router]);
 
-  const hasFailed = (isReady && !isTelegramEnvironment) || authMutation.isError || initDataMissing;
+  const hasFailed = authMutation.isError || initDataMissing;
 
   if (hasFailed) {
     return (

@@ -1,12 +1,12 @@
 "use client";
 
-import { retrieveRawInitData } from "@telegram-apps/sdk-react";
 import { useEffect, useRef } from "react";
 
 import { useTelegramContext } from "@/features/telegram";
 
 import { useTelegramAuthMutation } from "../hooks/use-telegram-auth";
 import { useSessionQuery } from "../hooks/use-session";
+import { readTelegramInitData } from "../lib/telegram-init-data";
 
 /**
  * Telegram desktop/mobile webviews can preserve cookies longer than expected.
@@ -14,20 +14,15 @@ import { useSessionQuery } from "../hooks/use-session";
  * the old cookie must not keep rendering the previous user's name/role.
  */
 export function SessionIdentityGuard() {
-  const { isReady, isTelegramEnvironment } = useTelegramContext();
+  const { isReady } = useTelegramContext();
   const session = useSessionQuery();
   const authMutation = useTelegramAuthMutation();
   const attemptedFor = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!isReady || !isTelegramEnvironment || session.isLoading || !session.data?.user) return;
+    if (!isReady || session.isLoading || !session.data?.user) return;
 
-    let rawInitData: string | undefined;
-    try {
-      rawInitData = retrieveRawInitData();
-    } catch {
-      rawInitData = undefined;
-    }
+    const rawInitData = readTelegramInitData();
     if (!rawInitData || attemptedFor.current === rawInitData) return;
 
     const telegramUserId = readTelegramUserId(rawInitData);
@@ -35,7 +30,7 @@ export function SessionIdentityGuard() {
 
     attemptedFor.current = rawInitData;
     authMutation.mutate({ initData: rawInitData });
-  }, [authMutation, isReady, isTelegramEnvironment, session.data?.user, session.isLoading]);
+  }, [authMutation, isReady, session.data?.user, session.isLoading]);
 
   return null;
 }
