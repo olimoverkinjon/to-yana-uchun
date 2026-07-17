@@ -14,7 +14,9 @@ import {
   getTopContributors,
 } from "@/features/analytics/api/analytics-repository";
 import { analyticsKeys } from "@/features/analytics/query-keys";
+import type { DashboardFilters } from "@/features/analytics/types";
 import { getPermissions } from "@/features/auth/api/permissions";
+import { listEvents } from "@/features/events";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -24,10 +26,12 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const filters = {};
   const supabase = createSupabaseServerClient();
   const permissions = await getPermissions();
   const queryClient = new QueryClient();
+  const firstEventsPage = await listEvents(supabase, { sort: "newest" }, { offset: 0, limit: 1 });
+  const firstEvent = firstEventsPage.items[0];
+  const filters: DashboardFilters = firstEvent?.id ? { eventId: firstEvent.id } : {};
 
   await Promise.all([
     queryClient.prefetchQuery({
@@ -72,7 +76,7 @@ export default async function DashboardPage() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <DashboardView />
+      <DashboardView initialFilters={filters} />
     </HydrationBoundary>
   );
 }

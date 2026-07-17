@@ -78,14 +78,16 @@ export function DashboardFiltersBar({ state }: { state: DashboardFilterState }) 
           <div className="space-y-1.5">
             <Label className="text-xs">{t("event")}</Label>
             <Select
-              value={filters.eventId ?? ALL}
-              onValueChange={(value) => set("eventId", value === ALL ? null : value)}
+              value={filters.eventId ?? eventOptions[0]?.id ?? ALL}
+              onValueChange={(value) => {
+                if (value !== ALL) set("eventId", value);
+              }}
             >
               <SelectTrigger size="sm" className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={ALL}>{t("allEvents")}</SelectItem>
+                {eventOptions.length === 0 ? <SelectItem value={ALL}>{t("chooseEvent")}</SelectItem> : null}
                 {eventOptions.map((event) => (
                   <SelectItem key={event.id} value={event.id!}>
                     {event.title}

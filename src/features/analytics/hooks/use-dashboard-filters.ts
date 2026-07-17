@@ -49,10 +49,15 @@ export function useDashboardFilters(initial: DashboardFilters = EMPTY_FILTERS): 
     });
   }, []);
 
-  const reset = useCallback(() => setFilters({}), []);
+  const reset = useCallback(() => {
+    setFilters((current) => (current.eventId ? { eventId: current.eventId } : {}));
+  }, []);
 
   const activeCount = useMemo(
-    () => Object.values(filters).filter((value) => value !== null && value !== undefined && value !== "").length,
+    () =>
+      Object.entries(filters).filter(
+        ([key, value]) => key !== "eventId" && value !== null && value !== undefined && value !== "",
+      ).length,
     [filters],
   );
 

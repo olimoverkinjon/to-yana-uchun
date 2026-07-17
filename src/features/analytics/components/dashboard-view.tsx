@@ -1,16 +1,22 @@
 "use client";
 
-import { Activity } from "lucide-react";
+import { useEffect, useMemo } from "react";
+
+import { Activity, CalendarHeart } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ActivityList, useRecentActivityQuery } from "@/features/activity";
 import { usePermissions } from "@/features/auth";
+import { useEventsInfiniteQuery } from "@/features/events";
 import { useTelegramUser } from "@/features/telegram";
 import { ExportMenu } from "@/features/reports/components/export-menu";
+import { EmptyState } from "@/shared/components/ui/empty-state";
 
 import { useDashboardFilters } from "../hooks/use-dashboard-filters";
+import type { DashboardFilters } from "../types";
 
 import { ChartSkeleton } from "./charts/chart-primitives";
 import { DashboardFiltersBar } from "./dashboard-filters-bar";
@@ -66,14 +72,22 @@ const SearchAnalyticsPanel = dynamic(
  * panels (activity, search analytics, export) simply do not render for a Viewer
  * rather than showing them an empty box.
  */
-export function DashboardView() {
+export function DashboardView({ initialFilters = {} }: { initialFilters?: DashboardFilters }) {
   const t = useTranslations("dashboard");
   const user = useTelegramUser();
   const { isSuperAdmin } = usePermissions();
-  const filterState = useDashboardFilters();
-  const { filters } = filterState;
+  const filterState = useDashboardFilters(initialFilters);
+  const { filters, set } = filterState;
+  const events = useEventsInfiniteQuery({ sort: "newest" });
+  const eventOptions = useMemo(() => events.data?.pages.flatMap((page) => page.items) ?? [], [events.data]);
+  const selectedEvent = eventOptions.find((event) => event.id === filters.eventId);
 
   const activity = useRecentActivityQuery(8, { enabled: isSuperAdmin });
+
+  useEffect(() => {
+    const firstEventId = eventOptions[0]?.id;
+    if (!filters.eventId && firstEventId) set("eventId", firstEventId);
+  }, [eventOptions, filters.eventId, set]);
 
   return (
     <div className="space-y-4 sm:space-y-5">
@@ -85,6 +99,13 @@ export function DashboardView() {
               {t("greeting", { name: user.first_name })}
             </p>
           ) : null}
+          {filters.eventId ? (
+            <p className="text-muted-foreground truncate text-xs sm:text-sm">
+              {selectedEvent
+                ? t("selectedEvent", { title: selectedEvent.title ?? t("selectedEventLoading") })
+                : t("selectedEventLoading")}
+            </p>
+          ) : null}
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -94,45 +115,59 @@ export function DashboardView() {
         </div>
       </div>
 
-      <DashboardStatGrid filters={filters} />
+      {!filters.eventId ? (
+        events.isLoading ? (
+          <DashboardEventSkeleton />
+        ) : (
+          <Card className="glass-panel border-0">
+            <CardContent className="p-8">
+              <EmptyState icon={CalendarHeart} title={t("selectEventTitle")} body={t("selectEventBody")} />
+            </CardContent>
+          </Card>
+        )
+      ) : (
+        <>
+          <DashboardStatGrid filters={filters} />
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <GiftsOverTimeChart filters={filters} />
-        <GiftTypeChart filters={filters} />
-        <CashDistributionChart filters={filters} />
-        <ContributorsGrowthChart filters={filters} />
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-2">
-        <EventsByYearChart filters={filters} />
-        <GlobalAveragesPanel filters={filters} />
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-2">
-        <TopContributors filters={filters} />
-
-        {isSuperAdmin ? (
-          <div className="space-y-4">
-            <Card className="glass-panel gap-0 border-0 py-0 ring-0">
-              <CardHeader className="p-4 pb-2 sm:p-5 sm:pb-2">
-                <CardTitle className="flex items-center gap-1.5 text-sm font-semibold">
-                  <Activity className="size-3.5" />
-                  {t("stats.recentActivity")}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-2 pt-0 sm:p-3 sm:pt-0">
-                <ActivityList
-                  items={activity.data ?? []}
-                  isLoading={activity.isLoading}
-                  emptyTitle={t("emptyActivity")}
-                />
-              </CardContent>
-            </Card>
-
-            <SearchAnalyticsPanel />
+          <div className="grid gap-4 lg:grid-cols-2">
+            <GiftsOverTimeChart filters={filters} />
+            <GiftTypeChart filters={filters} />
+            <CashDistributionChart filters={filters} />
+            <ContributorsGrowthChart filters={filters} />
           </div>
-        ) : null}
-      </div>
+
+          <div className="grid gap-4 lg:grid-cols-2">
+            <EventsByYearChart filters={filters} />
+            <GlobalAveragesPanel filters={filters} />
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-2">
+            <TopContributors filters={filters} />
+
+            {isSuperAdmin ? (
+              <div className="space-y-4">
+                <Card className="glass-panel gap-0 border-0 py-0 ring-0">
+                  <CardHeader className="p-4 pb-2 sm:p-5 sm:pb-2">
+                    <CardTitle className="flex items-center gap-1.5 text-sm font-semibold">
+                      <Activity className="size-3.5" />
+                      {t("stats.recentActivity")}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-2 pt-0 sm:p-3 sm:pt-0">
+                    <ActivityList
+                      items={activity.data ?? []}
+                      isLoading={activity.isLoading}
+                      emptyTitle={t("emptyActivity")}
+                    />
+                  </CardContent>
+                </Card>
+
+                <SearchAnalyticsPanel />
+              </div>
+            ) : null}
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -143,4 +178,20 @@ function ChartPanelSkeleton() {
 
 function PanelSkeleton() {
   return <ChartSkeleton height={260} />;
+}
+
+function DashboardEventSkeleton() {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <Card key={index} className="glass-panel border-0">
+          <CardContent className="space-y-5 p-5">
+            <Skeleton className="h-4 w-28" />
+            <Skeleton className="h-8 w-20" />
+            <Skeleton className="h-3 w-40" />
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
 }

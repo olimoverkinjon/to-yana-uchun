@@ -51,6 +51,10 @@
   "dashboard": {
     "title": "Boshqaruv paneli",
     "greeting": "Xush kelibsiz, {name}",
+    "selectedEvent": "Tanlangan to'y: {title}",
+    "selectedEventLoading": "Tanlangan to'y yuklanmoqda",
+    "selectEventTitle": "Avval to'y tanlang",
+    "selectEventBody": "Dashboarddagi summa va sovg'alar faqat tanlangan to'y bo'yicha ko'rsatiladi.",
     "stats": {
       "totalEvents": "Jami to'ylar",
       "totalGifts": "Jami sovg'alar",
@@ -103,6 +107,7 @@
       "reset": "Filtrlarni tiklash",
       "allYears": "Barcha yillar",
       "allEvents": "Barcha to'ylar",
+      "chooseEvent": "To'y tanlang",
       "allTypes": "Barcha turlar",
       "allCurrencies": "Barcha valyutalar"
     },
@@ -151,8 +156,8 @@
       "cashPerEvent": "Har to'yga o'rtacha {code}"
     },
     "contributors": {
-      "title": "Top hissa qoshganlar",
-      "description": "Sovga soni boyicha, valyutalarni aralashtirmaydi",
+      "title": "Kim qancha berdi",
+      "description": "Tanlangan to'y bo'yicha berilgan sovg'alar",
       "empty": "Hali hissa qoshganlar yoq",
       "giftCount": "{count, plural, other {# ta sovga}}",
       "eventCount": "{count, plural, other {# ta toy}}"

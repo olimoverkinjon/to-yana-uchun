@@ -51,6 +51,10 @@
   "dashboard": {
     "title": "Dashboard",
     "greeting": "Welcome back, {name}",
+    "selectedEvent": "Selected wedding: {title}",
+    "selectedEventLoading": "Loading selected wedding",
+    "selectEventTitle": "Choose a wedding first",
+    "selectEventBody": "Dashboard totals and gifts are shown only for the selected wedding.",
     "stats": {
       "totalEvents": "Total Events",
       "totalGifts": "Total Gifts",
@@ -103,6 +107,7 @@
       "reset": "Reset filters",
       "allYears": "All years",
       "allEvents": "All events",
+      "chooseEvent": "Choose a wedding",
       "allTypes": "All types",
       "allCurrencies": "All currencies"
     },
@@ -151,8 +156,8 @@
       "cashPerEvent": "Average {code} per event"
     },
     "contributors": {
-      "title": "Top contributors",
-      "description": "Ranked by gift count, never by mixed value",
+      "title": "Who gave what",
+      "description": "Gifts recorded for the selected wedding",
       "empty": "No contributors yet",
       "giftCount": "{count, plural, one {# gift} other {# gifts}}",
       "eventCount": "{count, plural, one {# event} other {# events}}"
