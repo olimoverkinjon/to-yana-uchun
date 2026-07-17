@@ -20,7 +20,7 @@ export function SplashScreen() {
         className="flex flex-col items-center gap-4"
       >
         <div className="bg-primary text-primary-foreground shadow-primary/20 flex size-16 items-center justify-center rounded-2xl text-2xl font-semibold shadow-lg">
-          WR
+          TD
         </div>
         <div className="space-y-1.5">
           <p className="text-foreground text-lg font-semibold tracking-tight">{t("common.appName")}</p>

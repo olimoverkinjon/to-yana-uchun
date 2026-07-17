@@ -20,10 +20,10 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
     const event = await getEvent(createSupabaseServerClient(), id);
     // Falls back rather than 404-ing the title: RLS legitimately returns null
     // for a Viewer without access, and the page itself handles that state.
-    if (!event) return { title: "Wedding Registry" };
-    return { title: `${event.title} — Wedding Registry` };
+    if (!event) return { title: "To'y Daftari" };
+    return { title: `${event.title} — To'y Daftari` };
   } catch {
-    return { title: "Wedding Registry" };
+    return { title: "To'y Daftari" };
   }
 }
 

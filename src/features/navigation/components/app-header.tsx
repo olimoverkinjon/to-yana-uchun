@@ -56,7 +56,7 @@ export function AppHeader() {
       <div className="flex min-w-0 items-center gap-2 sm:gap-8">
         <Link href="/dashboard" className="text-foreground flex items-center gap-2 font-semibold tracking-tight">
           <span className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-xl text-sm">
-            WR
+            TD
           </span>
           <span className="hidden sm:inline">{tCommon("appName")}</span>
         </Link>

@@ -18,7 +18,7 @@ import { getPermissions } from "@/features/auth/api/permissions";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Dashboard — Wedding Registry",
+  title: "Bosh sahifa — To'y Daftari",
 };
 
 export const dynamic = "force-dynamic";

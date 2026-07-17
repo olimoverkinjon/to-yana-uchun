@@ -1,4 +1,4 @@
-# Wedding Registry Telegram Mini App
+# To'y Daftari Telegram Mini App
 
 A production-grade Telegram Mini App for wedding event registries, gift ledgers, analytics, admin operations, reports, and immutable audit history.
 
@@ -195,4 +195,4 @@ Proprietary unless a license file is added by the project owner.
 
 ## Credits
 
-Built for the Wedding Registry product using Next.js, Supabase, Telegram Mini Apps, and the open-source packages listed in `package.json`.
+Built for the To'y Daftari product using Next.js, Supabase, Telegram Mini Apps, and the open-source packages listed in `package.json`.

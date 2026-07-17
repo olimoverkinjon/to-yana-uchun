@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Wedding Registry",
-  description: "Every wedding gift, remembered forever.",
+  title: "To'y Daftari",
+  description: "Har bir to'yona daftarda saqlanadi.",
 };
 
 export const viewport: Viewport = {

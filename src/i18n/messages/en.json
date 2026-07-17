@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Wedding Registry",
+    "appName": "To'y Daftari",
     "loading": "Loading…",
     "retry": "Try again",
     "back": "Back",
@@ -403,7 +403,7 @@
   },
   "adminHome": {
     "title": "Admin",
-    "description": "Manage the wedding registry and Mini App users.",
+    "description": "Manage To'y Daftari and Mini App users.",
     "totalEvents": "Weddings",
     "totalGifts": "Gifts",
     "totalUsers": "Users",

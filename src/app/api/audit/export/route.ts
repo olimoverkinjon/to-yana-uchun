@@ -72,7 +72,7 @@ export async function GET(request: Request) {
       ? renderCsv(report)
       : format === "xlsx"
         ? await renderXlsx(report)
-        : await renderPdf(report, "Wedding Registry");
+        : await renderPdf(report, "To'y Daftari");
 
   return new NextResponse(body as BodyInit, {
     headers: {
