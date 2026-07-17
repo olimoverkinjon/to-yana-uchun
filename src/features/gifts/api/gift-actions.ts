@@ -3,9 +3,11 @@
 import { revalidatePath } from "next/cache";
 
 import { requireSuperAdmin } from "@/features/auth/api/permissions";
+import { demoGifts } from "@/features/demo/demo-data";
 import { nullableArg } from "@/lib/supabase/rpc-args";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { fail, ok, toAppError, type ActionResult } from "@/shared/lib/errors";
+import { isLocalDemoMode } from "@/shared/lib/local-demo";
 import { getRequestContext } from "@/shared/lib/request-context";
 
 import { createGiftInputSchema, giftIdInputSchema, updateGiftInputSchema } from "../schemas/gift-schema";
@@ -34,6 +36,7 @@ export async function createGiftAction(input: unknown): Promise<ActionResult<Gif
 
   const denied = await requireSuperAdmin();
   if (denied) return { ok: false, error: denied };
+  if (isLocalDemoMode()) return ok(demoGifts[0] as GiftRow);
 
   const { eventId, values, reason } = parsed.data;
   const supabase = createSupabaseServerClient();
@@ -65,6 +68,7 @@ export async function updateGiftAction(input: unknown): Promise<ActionResult<Gif
 
   const denied = await requireSuperAdmin();
   if (denied) return { ok: false, error: denied };
+  if (isLocalDemoMode()) return ok({ ...demoGifts[0], id: parsed.data.id } as GiftRow);
 
   const { id, values, reason } = parsed.data;
   const supabase = createSupabaseServerClient();
@@ -99,6 +103,8 @@ export async function deleteGiftAction(input: unknown): Promise<ActionResult<Gif
 
   const denied = await requireSuperAdmin();
   if (denied) return { ok: false, error: denied };
+  if (isLocalDemoMode())
+    return ok({ ...demoGifts[0], id: parsed.data.id, deleted_at: new Date().toISOString() } as GiftRow);
 
   const { id, reason } = parsed.data;
   const supabase = createSupabaseServerClient();
@@ -118,6 +124,7 @@ export async function restoreGiftAction(input: unknown): Promise<ActionResult<Gi
 
   const denied = await requireSuperAdmin();
   if (denied) return { ok: false, error: denied };
+  if (isLocalDemoMode()) return ok({ ...demoGifts[0], id: parsed.data.id, deleted_at: null } as GiftRow);
 
   const { id, reason } = parsed.data;
   const supabase = createSupabaseServerClient();

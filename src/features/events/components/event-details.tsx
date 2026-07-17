@@ -4,13 +4,13 @@ import { CalendarHeart, Check, Link2, MapPin } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ActivityList, useRecordActivityQuery } from "@/features/activity";
+import { ActivityList, useLogActivity, useRecordActivityQuery } from "@/features/activity";
 import { usePermissions } from "@/features/auth";
 import { GiftList } from "@/features/gifts/components/gift-list";
 import { useTelegramBackButton } from "@/features/telegram";
@@ -49,6 +49,16 @@ export function EventDetails({ eventId, initialEvent }: EventDetailsProps) {
   // Telegram's own back button, rather than a second one drawn in the page —
   // inside the app, this is the control people already reach for.
   useTelegramBackButton(true, () => router.push("/events"));
+
+  // One view per visit to this event, not one per re-render.
+  const logActivity = useLogActivity();
+  const loggedView = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (loggedView.current === eventId) return;
+    loggedView.current = eventId;
+    logActivity("event_view", { event_id: eventId });
+  }, [eventId, logActivity]);
 
   const activity = useRecordActivityQuery("events", eventId, { enabled: isSuperAdmin });
 

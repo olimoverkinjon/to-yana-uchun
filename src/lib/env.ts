@@ -11,6 +11,7 @@ const clientSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
   NEXT_PUBLIC_APP_URL: z.string().url().optional(),
+  NEXT_PUBLIC_LOCAL_DEMO: z.enum(["true", "false"]).optional(),
 });
 
 const serverOnlySchema = z.object({
@@ -22,6 +23,7 @@ const serverOnlySchema = z.object({
   SUPABASE_JWT_SECRET: z.string().min(32, "SUPABASE_JWT_SECRET must be at least 32 characters"),
   TELEGRAM_BOT_TOKEN: z.string().min(1),
   SESSION_SECRET: z.string().min(32, "SESSION_SECRET must be at least 32 characters"),
+  BOOTSTRAP_SUPER_ADMIN_TELEGRAM_IDS: z.string().optional(),
 });
 
 function readClientEnv() {
@@ -29,6 +31,7 @@ function readClientEnv() {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_LOCAL_DEMO: process.env.NEXT_PUBLIC_LOCAL_DEMO,
   });
 
   if (!parsed.success) {
@@ -48,6 +51,7 @@ function readServerEnv() {
     SUPABASE_JWT_SECRET: process.env.SUPABASE_JWT_SECRET,
     TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN,
     SESSION_SECRET: process.env.SESSION_SECRET,
+    BOOTSTRAP_SUPER_ADMIN_TELEGRAM_IDS: process.env.BOOTSTRAP_SUPER_ADMIN_TELEGRAM_IDS,
   });
 
   if (!parsed.success) {

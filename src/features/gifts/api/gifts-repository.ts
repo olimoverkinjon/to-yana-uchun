@@ -1,6 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import { demoAuditLogs, demoGifts } from "@/features/demo/demo-data";
 import type { Database } from "@/lib/supabase/types";
+import { isLocalDemoMode } from "@/shared/lib/local-demo";
 
 import type { GiftFilters, GiftListPage, GiftWithRelations } from "../types";
 
@@ -57,6 +59,16 @@ export async function listGifts(
   filters: GiftFilters = {},
   { offset = 0, limit = GIFTS_PAGE_SIZE }: { offset?: number; limit?: number } = {},
 ): Promise<GiftListPage> {
+  if (isLocalDemoMode()) {
+    const filtered = filters.eventId ? demoGifts.filter((gift) => gift.event_id === filters.eventId) : demoGifts;
+    const items = filtered.slice(offset, offset + limit);
+    return {
+      items,
+      totalCount: filtered.length,
+      nextOffset: offset + items.length < filtered.length ? offset + items.length : null,
+    };
+  }
+
   let query = supabase.from("gifts").select(GIFT_SELECT, { count: "exact" });
 
   if (filters.eventId) query = query.eq("event_id", filters.eventId);
@@ -93,6 +105,8 @@ export async function listGifts(
 }
 
 export async function getGift(supabase: Client, id: string): Promise<GiftWithRelations | null> {
+  if (isLocalDemoMode()) return demoGifts.find((gift) => gift.id === id) ?? demoGifts[0] ?? null;
+
   const { data, error } = await supabase.from("gifts").select(GIFT_SELECT).eq("id", id).maybeSingle();
   if (error) throw error;
   return (data as unknown as GiftWithRelations) ?? null;
@@ -104,6 +118,10 @@ export async function getGift(supabase: Client, id: string): Promise<GiftWithRel
  * we know what to reciprocate?").
  */
 export async function listGiftsByGiver(supabase: Client, giverName: string, limit = 50): Promise<GiftWithRelations[]> {
+  if (isLocalDemoMode()) {
+    return demoGifts.filter((gift) => gift.giver_name.toLowerCase().includes(giverName.toLowerCase())).slice(0, limit);
+  }
+
   const term = escapeSearchTerm(giverName);
   if (!term) return [];
 
@@ -120,6 +138,8 @@ export async function listGiftsByGiver(supabase: Client, giverName: string, limi
 }
 
 export async function getGiftAuditHistory(supabase: Client, giftId: string, limit = 50) {
+  if (isLocalDemoMode()) return demoAuditLogs.filter((row) => row.related_gift_id === giftId).slice(0, limit);
+
   const { data, error } = await supabase
     .from("recent_activity")
     .select("*")

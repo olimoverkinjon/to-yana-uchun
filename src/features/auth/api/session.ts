@@ -5,9 +5,12 @@ import { cookies } from "next/headers";
 import { z } from "zod";
 
 import { serverEnv } from "@/lib/env";
+import { demoProfileId } from "@/features/demo/demo-data";
+import { isLocalDemoMode } from "@/shared/lib/local-demo";
 
 const SESSION_COOKIE_NAME = "wr_session";
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
+const SESSION_MAX_AGE_MS = SESSION_MAX_AGE_SECONDS * 1000;
 
 const sessionPayloadSchema = z.object({
   /** profiles.id — the `sub` claim minted into every Supabase access token for this session. */
@@ -46,6 +49,20 @@ export async function createSession(user: Omit<SessionPayload, "issuedAt">) {
 }
 
 export async function getSession(): Promise<SessionPayload | null> {
+  if (isLocalDemoMode()) {
+    return {
+      profileId: demoProfileId,
+      telegramId: 7990560340,
+      firstName: "Local",
+      lastName: "Admin",
+      username: "local_admin",
+      photoUrl: undefined,
+      languageCode: "uz",
+      isPremium: false,
+      issuedAt: Date.now(),
+    };
+  }
+
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   if (!token) return null;
@@ -81,7 +98,12 @@ function verify(token: string): SessionPayload | null {
     // this exact migration) makes the app self-heal by forcing a fresh
     // Telegram re-verification instead of erroring.
     const result = sessionPayloadSchema.safeParse(parsedJson);
-    return result.success ? result.data : null;
+    if (!result.success) return null;
+
+    const age = Date.now() - result.data.issuedAt;
+    if (age < 0 || age > SESSION_MAX_AGE_MS) return null;
+
+    return result.data;
   } catch {
     return null;
   }

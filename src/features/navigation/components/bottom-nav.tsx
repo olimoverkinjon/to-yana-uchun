@@ -15,7 +15,7 @@ export function BottomNav() {
   const t = useTranslations("nav");
 
   return (
-    <nav className="glass-panel fixed inset-x-4 bottom-4 z-40 flex items-center justify-around rounded-2xl px-2 py-2 sm:hidden">
+    <nav className="glass-panel fixed inset-x-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 flex items-center justify-around rounded-2xl px-2 py-2 sm:hidden">
       {navItems.map((item) => {
         const isActive = pathname === item.href;
         const Icon = item.icon;

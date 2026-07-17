@@ -1,6 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import { demoCurrencies, demoGiftTypes } from "@/features/demo/demo-data";
 import type { Database } from "@/lib/supabase/types";
+import { isLocalDemoMode } from "@/shared/lib/local-demo";
 
 export type GiftTypeRow = Database["public"]["Tables"]["gift_types"]["Row"];
 export type CurrencyRow = Database["public"]["Tables"]["currencies"]["Row"];
@@ -16,6 +18,8 @@ type Client = SupabaseClient<Database>;
  * types" would be two chances to filter or sort them differently.
  */
 export async function listGiftTypes(supabase: Client): Promise<GiftTypeRow[]> {
+  if (isLocalDemoMode()) return demoGiftTypes;
+
   const { data, error } = await supabase
     .from("gift_types")
     .select("*")
@@ -27,6 +31,8 @@ export async function listGiftTypes(supabase: Client): Promise<GiftTypeRow[]> {
 }
 
 export async function listCurrencies(supabase: Client): Promise<CurrencyRow[]> {
+  if (isLocalDemoMode()) return demoCurrencies;
+
   const { data, error } = await supabase
     .from("currencies")
     .select("*")

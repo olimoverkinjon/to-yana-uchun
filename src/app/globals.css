@@ -23,10 +23,19 @@
   --color-chart-3: var(--chart-3);
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
+  --color-viz-1: var(--viz-1);
+  --color-viz-2: var(--viz-2);
+  --color-viz-3: var(--viz-3);
+  --color-viz-4: var(--viz-4);
+  --color-viz-5: var(--viz-5);
+  --color-viz-grid: var(--viz-grid);
+  --color-viz-axis: var(--viz-axis);
+  --color-viz-muted: var(--viz-muted);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-success: var(--success);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -64,6 +73,13 @@
   --accent: oklch(0.94 0.024 264);
   --accent-foreground: oklch(0.32 0.06 264);
   --destructive: oklch(0.58 0.22 25);
+  /**
+   * Status colour, reserved. Never used as a data-series colour: a green mark
+   * has to mean "good" everywhere or nowhere, and a chart that spends it on
+   * "the third gift type" makes it mean nothing. Dark green rather than the
+   * brighter --chart-3, because this is text on a light surface.
+   */
+  --success: oklch(0.5 0.15 150);
   --border: oklch(0.91 0.008 264);
   --input: oklch(0.91 0.008 264);
   --ring: oklch(0.6 0.1 264);
@@ -72,6 +88,30 @@
   --chart-3: oklch(0.72 0.14 160);
   --chart-4: oklch(0.75 0.14 80);
   --chart-5: oklch(0.62 0.16 25);
+
+  /**
+   * Data-mark palette. Separate from --chart-* on purpose: those are accent
+   * colours (status icons, badges), and a status colour must never also mean
+   * "series 4" — otherwise a green mark reads as "good" when it only meant
+   * "the third gift type". These five are the same five hues, re-stepped into
+   * the lightness band a chart fill needs against this surface, and validated
+   * as a set (band, chroma floor, colour-blind separation, contrast) rather
+   * than picked by eye. Regenerate with the dataviz validator if they change.
+   *
+   * Worst adjacent CVD separation is in the floor band for tritanopia, so
+   * charts using 4+ series must also carry direct labels or a legend — colour
+   * alone is not sufficient identity here.
+   */
+  --viz-1: oklch(0.5 0.16 264);
+  --viz-2: oklch(0.56 0.14 210);
+  --viz-3: oklch(0.6 0.14 160);
+  --viz-4: oklch(0.64 0.15 80);
+  --viz-5: oklch(0.55 0.19 25);
+  --viz-grid: oklch(0.92 0.006 264);
+  --viz-axis: oklch(0.84 0.01 264);
+  /* De-emphasis gray, for the "one series is the point" case. */
+  --viz-muted: oklch(0.78 0.012 264);
+
   --radius: 0.75rem;
   --sidebar: oklch(0.98 0.004 264);
   --sidebar-foreground: oklch(0.2 0.024 264);
@@ -99,6 +139,7 @@
   --accent: oklch(0.31 0.032 264);
   --accent-foreground: oklch(0.95 0.012 264);
   --destructive: oklch(0.7 0.19 22);
+  --success: oklch(0.75 0.16 150);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.6 0.1 264);
@@ -107,6 +148,24 @@
   --chart-3: oklch(0.78 0.12 160);
   --chart-4: oklch(0.8 0.12 80);
   --chart-5: oklch(0.72 0.15 25);
+
+  /**
+   * Dark-mode data marks: chosen for the dark surface and validated against
+   * it, not derived by flipping the light values. The light steps sit at
+   * L 0.50–0.64, which on a dark card reads as murky; these sit at 0.58–0.66,
+   * the band a fill needs to stay separable there. (The --chart-* values above
+   * are lighter still, because an icon glyph and a filled area are not the
+   * same job — they fail the chart band outright.)
+   */
+  --viz-1: oklch(0.58 0.15 264);
+  --viz-2: oklch(0.62 0.13 210);
+  --viz-3: oklch(0.65 0.14 160);
+  --viz-4: oklch(0.66 0.13 80);
+  --viz-5: oklch(0.58 0.18 25);
+  --viz-grid: oklch(0.28 0.014 264);
+  --viz-axis: oklch(0.36 0.016 264);
+  --viz-muted: oklch(0.42 0.014 264);
+
   --sidebar: oklch(0.2 0.016 264);
   --sidebar-foreground: oklch(0.96 0.006 264);
   --sidebar-primary: oklch(0.72 0.13 264);
@@ -149,11 +208,45 @@ html.telegram {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
+  ::selection {
+    background: color-mix(in oklch, var(--primary) 22%, transparent);
   }
   html {
     @apply font-sans;
+    min-height: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground;
+    min-height: 100%;
+    overscroll-behavior-y: none;
+    font-feature-settings:
+      "cv02" 1,
+      "cv03" 1,
+      "cv04" 1,
+      "tnum" 0;
+  }
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    touch-action: manipulation;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 

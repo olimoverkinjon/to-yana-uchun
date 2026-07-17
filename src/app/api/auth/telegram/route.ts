@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
+import { headers } from "next/headers";
 import { z } from "zod";
 
 import { createSession } from "@/features/auth/api/session";
 import { InitDataVerificationError, verifyTelegramInitData } from "@/features/auth/api/verify-init-data";
+import { serverEnv } from "@/lib/env";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
-import type { Database } from "@/lib/supabase/types";
+import type { Database, Json } from "@/lib/supabase/types";
+import { rateLimit, rateLimitHeaders, rateLimitKey } from "@/shared/lib/rate-limit";
 
 const bodySchema = z.object({ initData: z.string().min(1) });
+const NO_STORE = { "Cache-Control": "no-store" };
 
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 
@@ -21,10 +25,19 @@ type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
  * definer and revoked from every client role).
  */
 export async function POST(request: Request) {
+  const limited = rateLimit(rateLimitKey(request, "auth:telegram"), 20, 5 * 60 * 1000);
+  if (!limited.ok) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429, headers: rateLimitHeaders(limited) });
+  }
+
+  const requestHeaders = await headers();
+  const userAgent = requestHeaders.get("user-agent");
+  const ipAddress = clientIp(requestHeaders);
   const json = await request.json().catch(() => null);
   const parsed = bodySchema.safeParse(json);
   if (!parsed.success) {
-    return NextResponse.json({ error: "invalid_request" }, { status: 400 });
+    await logSecurityEvent("auth", "warning", "Invalid Telegram auth request", { ipAddress, userAgent });
+    return NextResponse.json({ error: "invalid_request" }, { status: 400, headers: NO_STORE });
   }
 
   try {
@@ -49,8 +62,15 @@ export async function POST(request: Request) {
 
     if (error || !profile) {
       console.error("[api/auth/telegram] profile upsert failed", error);
-      return NextResponse.json({ error: "internal_error" }, { status: 500 });
+      await logSecurityEvent("auth", "error", "Telegram profile upsert failed", {
+        ipAddress,
+        userAgent,
+        error: error?.message,
+      });
+      return NextResponse.json({ error: "internal_error" }, { status: 500, headers: NO_STORE });
     }
+
+    await bootstrapSuperAdminIfConfigured(supabase, profile.id, user.id);
 
     await createSession({
       profileId: profile.id,
@@ -63,12 +83,87 @@ export async function POST(request: Request) {
       isPremium: user.isPremium,
     });
 
-    return NextResponse.json({ ok: true, user });
+    await supabase.from("activity_logs").insert({
+      user_id: profile.id,
+      action: "login",
+      metadata: { telegram_id: user.id },
+      ip_address: ipAddress ?? null,
+      user_agent: userAgent,
+    });
+
+    return NextResponse.json({ ok: true, user }, { headers: NO_STORE });
   } catch (error) {
     if (error instanceof InitDataVerificationError) {
-      return NextResponse.json({ error: "verification_failed" }, { status: 401 });
+      await logSecurityEvent("auth", "warning", "Telegram initData verification failed", { ipAddress, userAgent });
+      return NextResponse.json({ error: "verification_failed" }, { status: 401, headers: NO_STORE });
     }
     console.error("[api/auth/telegram] unexpected error", error);
-    return NextResponse.json({ error: "internal_error" }, { status: 500 });
+    await logSecurityEvent("auth", "error", "Unexpected Telegram authentication error", {
+      ipAddress,
+      userAgent,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return NextResponse.json({ error: "internal_error" }, { status: 500, headers: NO_STORE });
   }
+}
+
+function clientIp(headerList: Headers): string | null {
+  const forwarded = headerList.get("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0]?.trim() || null;
+  return headerList.get("x-real-ip");
+}
+
+async function bootstrapSuperAdminIfConfigured(
+  supabase: ReturnType<typeof createSupabaseServiceClient>,
+  profileId: string,
+  telegramId: number,
+) {
+  const configuredIds = serverEnv()
+    .BOOTSTRAP_SUPER_ADMIN_TELEGRAM_IDS?.split(",")
+    .map((id) => id.trim())
+    .filter(Boolean);
+
+  if (!configuredIds?.includes(String(telegramId))) return;
+
+  const { data: role, error: roleError } = await supabase.from("roles").select("id").eq("name", "super_admin").single();
+
+  if (roleError || !role) {
+    console.error("[api/auth/telegram] bootstrap role lookup failed", roleError);
+    return;
+  }
+
+  const { data: existing, error: existingError } = await supabase
+    .from("user_roles")
+    .select("id")
+    .eq("user_id", profileId)
+    .eq("role_id", role.id)
+    .is("deleted_at", null)
+    .maybeSingle();
+
+  if (existingError) {
+    console.error("[api/auth/telegram] bootstrap role check failed", existingError);
+    return;
+  }
+
+  if (existing) return;
+
+  const { error: insertError } = await supabase.from("user_roles").insert({
+    user_id: profileId,
+    role_id: role.id,
+    granted_by: null,
+  });
+
+  if (insertError) {
+    console.error("[api/auth/telegram] bootstrap role grant failed", insertError);
+  }
+}
+
+async function logSecurityEvent(
+  source: string,
+  level: "warning" | "error",
+  message: string,
+  metadata: Record<string, Json | undefined>,
+) {
+  const supabase = createSupabaseServiceClient();
+  await supabase.from("system_logs").insert({ source, level, message, metadata });
 }

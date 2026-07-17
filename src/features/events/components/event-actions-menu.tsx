@@ -65,7 +65,15 @@ export function EventActionsMenu({ event, onEdit, onDeleted }: EventActionsMenuP
       { id: event.id!, reason },
       {
         onSuccess: () => {
-          toast.success(t("deleted"));
+          toast.success(t("deleted"), {
+            duration: 10_000,
+            action: {
+              label: tCommon("undo"),
+              onClick: () => {
+                restoreMutation.mutate({ id: event.id!, reason: "Undo delete" }, { onError });
+              },
+            },
+          });
           setPending(null);
           onDeleted?.();
         },
@@ -79,7 +87,15 @@ export function EventActionsMenu({ event, onEdit, onDeleted }: EventActionsMenuP
       { id: event.id!, reason },
       {
         onSuccess: () => {
-          toast.success(t("restored"));
+          toast.success(t("restored"), {
+            duration: 10_000,
+            action: {
+              label: tCommon("undo"),
+              onClick: () => {
+                deleteMutation.mutate({ id: event.id!, reason: "Undo restore" }, { onError });
+              },
+            },
+          });
           setPending(null);
         },
         onError,

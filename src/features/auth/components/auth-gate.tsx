@@ -9,6 +9,7 @@ import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useTelegramContext } from "@/features/telegram";
 import { SplashScreen } from "@/shared/components/layout/splash-screen";
+import { isLocalDemoMode } from "@/shared/lib/local-demo";
 
 import { useTelegramAuthMutation } from "../hooks/use-telegram-auth";
 import { useSessionQuery } from "../hooks/use-session";
@@ -32,6 +33,10 @@ export function AuthGate() {
   const signedInUser = session.data?.user ?? null;
 
   useEffect(() => {
+    if (isLocalDemoMode()) {
+      router.replace("/dashboard");
+      return;
+    }
     if (!isReady || session.isLoading || signedInUser || attempted.current) return;
     if (!isTelegramEnvironment) return;
 
@@ -46,7 +51,7 @@ export function AuthGate() {
     if (rawInitData) {
       authMutation.mutate(rawInitData);
     }
-  }, [isReady, isTelegramEnvironment, session.isLoading, signedInUser, authMutation]);
+  }, [isReady, isTelegramEnvironment, session.isLoading, signedInUser, authMutation, router]);
 
   useEffect(() => {
     if (signedInUser) {

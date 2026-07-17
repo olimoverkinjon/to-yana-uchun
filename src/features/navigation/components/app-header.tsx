@@ -3,8 +3,18 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LogOut, Settings, Shield, User } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useSessionQuery } from "@/features/auth";
 import { useTelegramUser } from "@/features/telegram";
 import { cn } from "@/lib/utils";
 
@@ -16,9 +26,25 @@ export function AppHeader() {
   const pathname = usePathname();
   const t = useTranslations("nav");
   const tCommon = useTranslations("common");
-  const user = useTelegramUser();
+  const telegramUser = useTelegramUser();
+  const session = useSessionQuery();
+  const sessionUser = session.data?.user;
+  const user = telegramUser
+    ? {
+        firstName: telegramUser.first_name,
+        lastName: telegramUser.last_name,
+        username: telegramUser.username,
+        photoUrl: telegramUser.photo_url,
+      }
+    : {
+        firstName: sessionUser?.firstName,
+        lastName: sessionUser?.lastName,
+        username: sessionUser?.username,
+        photoUrl: sessionUser?.photoUrl,
+      };
 
-  const initials = user ? `${user.first_name?.[0] ?? ""}${user.last_name?.[0] ?? ""}`.trim().toUpperCase() || "U" : "U";
+  const displayName = [user.firstName, user.lastName].filter(Boolean).join(" ") || user.username || "Local Admin";
+  const initials = `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.trim().toUpperCase() || "U";
 
   return (
     <header className="glass-panel sticky top-0 z-30 flex h-16 items-center justify-between gap-4 px-4 sm:px-6">
@@ -55,10 +81,38 @@ export function AppHeader() {
       <div className="flex items-center gap-1">
         <LanguageSwitcher />
         <ThemeSwitcher />
-        <Avatar className="ml-1 size-8">
-          <AvatarImage src={user?.photo_url} alt={user?.first_name ?? ""} />
-          <AvatarFallback className="text-xs">{initials}</AvatarFallback>
-        </Avatar>
+        <DropdownMenu>
+          <DropdownMenuTrigger className="focus-visible:ring-ring ml-1 rounded-full outline-none focus-visible:ring-2">
+            <Avatar className="size-8">
+              <AvatarImage src={user.photoUrl} alt={displayName} />
+              <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>
+              <span className="text-foreground block truncate text-sm font-semibold">{displayName}</span>
+              <span className="block truncate">@{user.username ?? "local_admin"}</span>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem render={<Link href="/profile" />}>
+              <User className="mr-2 size-4" />
+              {t("profile")}
+            </DropdownMenuItem>
+            <DropdownMenuItem render={<Link href="/admin" />}>
+              <Shield className="mr-2 size-4" />
+              {t("admin")}
+            </DropdownMenuItem>
+            <DropdownMenuItem render={<Link href="/admin/settings" />}>
+              <Settings className="mr-2 size-4" />
+              Settings
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem render={<a href="/api/auth/logout" />}>
+              <LogOut className="mr-2 size-4" />
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

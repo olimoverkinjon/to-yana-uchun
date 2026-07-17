@@ -26,6 +26,7 @@ export function LanguageSwitcher() {
     if (next === locale || isPending) return;
     startTransition(async () => {
       await setLocaleAction(next);
+      document.cookie = `NEXT_LOCALE=${next}; path=/; max-age=31536000; samesite=lax`;
       router.refresh();
     });
   }
@@ -41,7 +42,7 @@ export function LanguageSwitcher() {
         {locales.map((l) => (
           <DropdownMenuItem
             key={l}
-            onSelect={() => handleSelect(l)}
+            onClick={() => handleSelect(l)}
             className={cn(l === locale && "text-primary font-semibold")}
           >
             {localeLabels[l]}

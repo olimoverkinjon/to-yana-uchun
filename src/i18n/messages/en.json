@@ -26,7 +26,8 @@
     "reasonLabel": "Reason for this change",
     "reasonPlaceholder": "Recorded in the history so anyone can see why",
     "confirm": "Confirm",
-    "saving": "Saving…"
+    "saving": "Saving…",
+    "undo": "Undo"
   },
   "splash": {
     "tagline": "Every gift, remembered forever"
@@ -35,7 +36,8 @@
     "dashboard": "Dashboard",
     "events": "Events",
     "search": "Search",
-    "profile": "Profile"
+    "profile": "Profile",
+    "admin": "Admin"
   },
   "theme": {
     "telegram": "Follow Telegram",
@@ -54,7 +56,121 @@
       "recentActivity": "Recent Activity"
     },
     "emptyActivity": "Nothing recorded yet",
-    "viewAll": "View all"
+    "viewAll": "View all",
+    "cards": {
+      "lastUpdated": "Updated {time}",
+      "neverUpdated": "No updates yet",
+      "totalEvents": {
+        "label": "Total Events"
+      },
+      "totalGifts": {
+        "label": "Total Gifts",
+        "description": "All gifts in the current filter"
+      },
+      "totalContributors": {
+        "label": "Total Contributors",
+        "description": "Distinct giver names"
+      },
+      "cash": {
+        "label": "Total {code}",
+        "description": "Cash gifts only"
+      },
+      "gold": {
+        "label": "Total Gold",
+        "description": "Precious gifts by weight"
+      },
+      "livestock": {
+        "label": "Livestock",
+        "description": "Livestock gifts"
+      },
+      "other": {
+        "label": "Other Gifts",
+        "description": "Products and goods"
+      }
+    },
+    "filters": {
+      "title": "Filters",
+      "year": "Year",
+      "event": "Event",
+      "giftType": "Gift type",
+      "currency": "Currency",
+      "dateRange": "Date range",
+      "from": "From",
+      "to": "To",
+      "reset": "Reset filters",
+      "allYears": "All years",
+      "allEvents": "All events",
+      "allTypes": "All types",
+      "allCurrencies": "All currencies"
+    },
+    "charts": {
+      "empty": "No data matches these filters yet",
+      "giftsOverTime": {
+        "title": "Gifts over time",
+        "descriptionMonth": "Monthly gift volume",
+        "descriptionYear": "Yearly gift volume",
+        "month": "Month",
+        "year": "Year",
+        "giftsLabel": "Gifts"
+      },
+      "giftTypes": {
+        "title": "Gift type distribution",
+        "description": "Share of gifts by category",
+        "other": "Other {count}",
+        "countLabel": "Gifts",
+        "shareLabel": "Share"
+      },
+      "cash": {
+        "title": "Cash distribution",
+        "description": "Cash totals stay separated by currency",
+        "meterLabel": "{code}, {count} cash gifts",
+        "giftCount": "{count, plural, =0 {No cash gifts} one {# cash gift} other {# cash gifts}}"
+      },
+      "contributorsGrowth": {
+        "title": "Contributors growth",
+        "description": "Cumulative distinct contributors",
+        "totalLabel": "Total",
+        "newLabel": "New"
+      },
+      "eventsByYear": {
+        "title": "Events by year",
+        "description": "Wedding count by year",
+        "countLabel": "Events"
+      }
+    },
+    "averages": {
+      "title": "Global averages",
+      "description": "Averages across the current event set",
+      "giftsPerEvent": "Gifts per event",
+      "contributorsPerEvent": "Contributors per event",
+      "livestockPerEvent": "Livestock per event",
+      "goldPerEvent": "Gold per event",
+      "cashPerEvent": "Average {code} per event"
+    },
+    "contributors": {
+      "title": "Top contributors",
+      "description": "Ranked by gift count, never by mixed value",
+      "empty": "No contributors yet",
+      "giftCount": "{count, plural, one {# gift} other {# gifts}}",
+      "eventCount": "{count, plural, one {# event} other {# events}}"
+    },
+    "searchAnalytics": {
+      "title": "Search analytics",
+      "description": "What people search and open most",
+      "topTerms": "Top terms",
+      "mostOpened": "Opened",
+      "recent": "Recent",
+      "emptyTerms": "No searches yet",
+      "emptyEvents": "No event views yet",
+      "emptyRecent": "No recent searches",
+      "searchCount": "{count, plural, one {# search} other {# searches}}",
+      "viewCount": "{count, plural, one {# view} other {# views}}"
+    },
+    "trend": {
+      "noComparison": "New",
+      "flat": "0%",
+      "label": "{value}% change"
+    }
   },
   "auth": {
     "verifying": "Verifying your Telegram account…",
@@ -261,5 +377,65 @@
     "conflict": "That already exists",
     "unknown": "Something went wrong. Please try again.",
     "network": "Can't reach the server. Check your connection."
+  },
+  "reports": {
+    "export": "Export",
+    "downloaded": "Report downloaded",
+    "generatedAt": "Generated at",
+    "filtered": "Filtered",
+    "titles": {
+      "event": "Event Report",
+      "contributor": "Contributor Report",
+      "cash": "Cash Report",
+      "giftType": "Gift Type Report",
+      "yearly": "Yearly Report"
+    },
+    "formats": {
+      "csv": "CSV",
+      "xlsx": "Excel",
+      "pdf": "PDF"
+    },
+    "summary": {
+      "event": "Event",
+      "couple": "Couple",
+      "date": "Date",
+      "location": "Location",
+      "totalEvents": "Total events",
+      "totalGifts": "Total gifts",
+      "totalContributors": "Total contributors",
+      "cash": "Cash",
+      "gold": "Gold",
+      "livestock": "Livestock",
+      "products": "Products",
+      "mostCommon": "Most common gift"
+    },
+    "columns": {
+      "rank": "Rank",
+      "giver": "Giver",
+      "giftType": "Gift type",
+      "category": "Category",
+      "amount": "Amount",
+      "weight": "Weight",
+      "totalWeight": "Total weight",
+      "description": "Description",
+      "giftDate": "Gift date",
+      "giftCount": "Gift count",
+      "events": "Events",
+      "cash": "Cash",
+      "lastGift": "Last gift",
+      "currency": "Currency",
+      "total": "Total",
+      "countShare": "Count share",
+      "share": "Share",
+      "year": "Year",
+      "contributors": "Contributors"
+    },
+    "tables": {
+      "gifts": "Gifts",
+      "contributors": "Contributors",
+      "cash": "Cash by currency",
+      "giftTypes": "Gift types",
+      "yearly": "Yearly gifts"
+    }
   }
 }

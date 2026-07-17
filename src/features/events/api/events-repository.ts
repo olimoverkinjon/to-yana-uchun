@@ -1,6 +1,14 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import {
+  demoAuditLogs,
+  demoEventCashTotals,
+  demoEventGiftTypeTotals,
+  demoEventPage,
+  demoEvents,
+} from "@/features/demo/demo-data";
 import type { Database } from "@/lib/supabase/types";
+import { isLocalDemoMode } from "@/shared/lib/local-demo";
 
 import type {
   EventCashTotalRow,
@@ -72,6 +80,8 @@ export async function listEvents(
   filters: EventFilters = {},
   { offset = 0, limit = EVENTS_PAGE_SIZE }: { offset?: number; limit?: number } = {},
 ): Promise<EventListPage> {
+  if (isLocalDemoMode()) return demoEventPage(offset, limit);
+
   let query = supabase.from("event_summaries").select("*", { count: "exact" });
 
   if (!filters.includeDeleted) {
@@ -110,12 +120,16 @@ export async function listEvents(
 
 /** Returns null when the event does not exist *or* RLS hides it — see the RPCs. */
 export async function getEvent(supabase: Client, id: string): Promise<EventSummaryRow | null> {
+  if (isLocalDemoMode()) return demoEvents.find((event) => event.id === id) ?? demoEvents[0] ?? null;
+
   const { data, error } = await supabase.from("event_summaries").select("*").eq("id", id).maybeSingle();
   if (error) throw error;
   return data;
 }
 
 export async function getEventCashTotals(supabase: Client, eventId: string): Promise<EventCashTotalRow[]> {
+  if (isLocalDemoMode()) return demoEventCashTotals.filter((row) => row.event_id === eventId);
+
   const { data, error } = await supabase
     .from("event_cash_totals")
     .select("*")
@@ -127,6 +141,8 @@ export async function getEventCashTotals(supabase: Client, eventId: string): Pro
 }
 
 export async function getEventGiftTypeTotals(supabase: Client, eventId: string): Promise<EventGiftTypeTotalRow[]> {
+  if (isLocalDemoMode()) return demoEventGiftTypeTotals.filter((row) => row.event_id === eventId);
+
   const { data, error } = await supabase
     .from("event_gift_type_totals")
     .select("*")
@@ -139,6 +155,8 @@ export async function getEventGiftTypeTotals(supabase: Client, eventId: string):
 
 /** Distinct years that have at least one event, for the year filter. */
 export async function listEventYears(supabase: Client): Promise<number[]> {
+  if (isLocalDemoMode()) return [...new Set(demoEvents.map((event) => event.event_year ?? 2026))];
+
   const { data, error } = await supabase
     .from("events")
     .select("event_year")
@@ -154,6 +172,8 @@ export async function listEventYears(supabase: Client): Promise<number[]> {
  * gets an empty list rather than an error.
  */
 export async function getEventAuditHistory(supabase: Client, eventId: string, limit = 50) {
+  if (isLocalDemoMode()) return demoAuditLogs.filter((row) => row.related_event_id === eventId).slice(0, limit);
+
   const { data, error } = await supabase
     .from("recent_activity")
     .select("*")

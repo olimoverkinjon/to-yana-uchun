@@ -14,6 +14,7 @@
  * plain npm library, so this calls it directly and gets byte-identical output
  * with no container runtime involved.
  */
+import { spawnSync } from "node:child_process";
 import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -25,7 +26,9 @@ import { apply as applyTypescriptTemplate } from "@supabase/postgres-meta/dist/s
 import { databaseUrl, startHarness } from "./harness.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.resolve(here, "..", "..");
 const target = path.resolve(here, "..", "..", "src", "lib", "supabase", "types.ts");
+const prettierCli = path.join(repoRoot, "node_modules", "prettier", "bin", "prettier.cjs");
 
 const HEADER = `/**
  * Generated from supabase/migrations/*.sql — do not hand-edit.
@@ -55,10 +58,21 @@ async function main() {
     await pgMeta.end();
 
     writeFileSync(target, HEADER + generated.replace(/^[\s\S]*?(?=export type Json)/, ""), "utf8");
+    formatGeneratedTypes();
     log(`wrote ${path.relative(process.cwd(), target)}`);
     console.log("");
   } finally {
     await stop();
+  }
+}
+
+function formatGeneratedTypes() {
+  const result = spawnSync(process.execPath, [prettierCli, "--write", target], {
+    encoding: "utf8",
+  });
+
+  if (result.status !== 0) {
+    throw new Error(`formatting generated types failed:\n${result.stderr || result.stdout}`);
   }
 }
 

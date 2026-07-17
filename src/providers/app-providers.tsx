@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import type { ReactNode } from "react";
 
 import { Toaster } from "@/components/ui/sonner";
@@ -8,7 +9,13 @@ import { RealtimeProvider } from "@/features/realtime";
 import { TelegramProvider } from "@/features/telegram";
 
 import { QueryProvider } from "./query-provider";
+import { TelegramThemeSync } from "./telegram-theme-sync";
 import { ThemeProvider } from "./theme-provider";
+
+const CommandPalette = dynamic(
+  () => import("@/features/search/components/command-palette").then((module) => module.CommandPalette),
+  { ssr: false },
+);
 
 /**
  * Composition root for every app-wide provider. Order matters: Theme and
@@ -25,9 +32,12 @@ export function AppProviders({ children }: { children: ReactNode }) {
     <ThemeProvider>
       <QueryProvider>
         <TelegramProvider>
+          {/* Inside TelegramProvider: reads the SDK's theme signal. */}
+          <TelegramThemeSync />
           <RealtimeProvider>
             <TooltipProvider delay={200}>
               {children}
+              <CommandPalette />
               <Toaster />
             </TooltipProvider>
           </RealtimeProvider>

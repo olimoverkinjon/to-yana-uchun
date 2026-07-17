@@ -3,9 +3,11 @@
 import { revalidatePath } from "next/cache";
 
 import { requireSuperAdmin } from "@/features/auth/api/permissions";
+import { demoEventRow } from "@/features/demo/demo-data";
 import { nullableArg } from "@/lib/supabase/rpc-args";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { fail, ok, toAppError, type ActionResult } from "@/shared/lib/errors";
+import { isLocalDemoMode } from "@/shared/lib/local-demo";
 import { getRequestContext } from "@/shared/lib/request-context";
 
 import {
@@ -43,6 +45,7 @@ export async function createEventAction(input: unknown): Promise<ActionResult<Ev
 
   const denied = await requireSuperAdmin();
   if (denied) return { ok: false, error: denied };
+  if (isLocalDemoMode()) return ok(demoEventRow);
 
   const { values, reason } = parsed.data;
   const supabase = createSupabaseServerClient();
@@ -75,6 +78,7 @@ export async function updateEventAction(input: unknown): Promise<ActionResult<Ev
 
   const denied = await requireSuperAdmin();
   if (denied) return { ok: false, error: denied };
+  if (isLocalDemoMode()) return ok({ ...demoEventRow, id: parsed.data.id });
 
   const { id, values, reason } = parsed.data;
   const supabase = createSupabaseServerClient();
@@ -109,6 +113,7 @@ export async function setEventStatusAction(input: unknown): Promise<ActionResult
 
   const denied = await requireSuperAdmin();
   if (denied) return { ok: false, error: denied };
+  if (isLocalDemoMode()) return ok({ ...demoEventRow, id: parsed.data.id, status: parsed.data.status });
 
   const { id, status, reason } = parsed.data;
   const supabase = createSupabaseServerClient();
@@ -128,6 +133,7 @@ export async function deleteEventAction(input: unknown): Promise<ActionResult<Ev
 
   const denied = await requireSuperAdmin();
   if (denied) return { ok: false, error: denied };
+  if (isLocalDemoMode()) return ok({ ...demoEventRow, id: parsed.data.id, deleted_at: new Date().toISOString() });
 
   const { id, reason } = parsed.data;
   const supabase = createSupabaseServerClient();
@@ -149,6 +155,7 @@ export async function restoreEventAction(input: unknown): Promise<ActionResult<E
 
   const denied = await requireSuperAdmin();
   if (denied) return { ok: false, error: denied };
+  if (isLocalDemoMode()) return ok({ ...demoEventRow, id: parsed.data.id, deleted_at: null });
 
   const { id, reason } = parsed.data;
   const supabase = createSupabaseServerClient();

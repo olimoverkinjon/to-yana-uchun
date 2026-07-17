@@ -383,6 +383,20 @@ async function main() {
     });
   });
 
+  test("database rejects pathological text payloads even through RPCs", async () => {
+    await asUser(client, admin.id, async () => {
+      await rejects(() => client.query(`select public.create_event($1, 2025)`, ["x".repeat(201)]));
+      await rejects(() =>
+        client.query(`select public.create_gift($1, $2, $3, 100, $4)`, [
+          seedEvent.id,
+          "x".repeat(201),
+          giftType.cash,
+          currency.USD,
+        ]),
+      );
+    });
+  });
+
   test("a super admin cannot forge created_by on a direct insert", async () => {
     await asUser(client, admin.id, async () => {
       await rejects(
@@ -581,6 +595,34 @@ async function main() {
       return rows[0].is_viewer_or_above;
     });
     assert.equal(revoked, false, "revoking a grant must take effect immediately, not at cookie expiry");
+  });
+
+  test("disabling a user immediately removes their effective permissions", async () => {
+    const temp = await mkProfile(1005, "Disabled");
+    await client.query(`insert into public.user_roles (user_id, role_id) values ($1, $2)`, [temp.id, roleId.viewer]);
+
+    const before = await asUser(client, temp.id, async () => {
+      const { rows } = await client.query(`select * from public.my_permissions()`);
+      return rows[0];
+    });
+    assert.equal(before.is_viewer_or_above, true);
+    assert.deepEqual(before.roles, ["viewer"]);
+
+    await asUserCommitted(client, admin.id, async () => {
+      await client.query(`select public.admin_set_user_disabled($1, true, 'qa disabled permission regression')`, [
+        temp.id,
+      ]);
+    });
+
+    await asUser(client, temp.id, async () => {
+      const { rows: permissions } = await client.query(`select * from public.my_permissions()`);
+      assert.equal(permissions[0].is_super_admin, false);
+      assert.equal(permissions[0].is_viewer_or_above, false);
+      assert.deepEqual(permissions[0].roles, []);
+
+      const { rows: events } = await client.query(`select * from public.events`);
+      assert.equal(events.length, 0, "a disabled user must not keep RLS read access through old role grants");
+    });
   });
 
   // =====================================================================

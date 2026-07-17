@@ -41,7 +41,7 @@ export function ThemeSwitcher() {
         {options.map(({ value, Icon }) => (
           <DropdownMenuItem
             key={value}
-            onSelect={() => setTheme(value)}
+            onClick={() => setTheme(value)}
             className={cn(value === theme && "text-primary font-semibold")}
           >
             <Icon className="mr-2 size-4" />

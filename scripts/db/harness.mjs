@@ -56,6 +56,12 @@ export async function startHarness({ log = () => {} } = {}) {
     password: PASSWORD,
     port: PORT,
     persistent: false,
+    // Without this, initdb inherits the host locale — on a Windows machine
+    // that means a WIN1252 cluster, which cannot even store the Uzbek and
+    // Russian text this app is built around, and rejects any migration
+    // containing a non-Latin-1 character. Supabase runs UTF8; a harness that
+    // does not is testing a different database than the one we ship to.
+    initdbFlags: ["--encoding=UTF8", "--locale=C"],
     onLog: () => {},
     onError: () => {},
   });

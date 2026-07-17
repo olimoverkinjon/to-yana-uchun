@@ -26,7 +26,8 @@
     "reasonLabel": "O'zgartirish sababi",
     "reasonPlaceholder": "Tarixda saqlanadi, sababini hamma ko'radi",
     "confirm": "Tasdiqlash",
-    "saving": "Saqlanmoqda…"
+    "saving": "Saqlanmoqda…",
+    "undo": "Bekor qilish"
   },
   "splash": {
     "tagline": "Har bir sovg'a abadiy xotirada saqlanadi"
@@ -35,7 +36,8 @@
     "dashboard": "Bosh sahifa",
     "events": "To'ylar",
     "search": "Qidiruv",
-    "profile": "Profil"
+    "profile": "Profil",
+    "admin": "Admin"
   },
   "theme": {
     "telegram": "Telegram kabi",
@@ -54,7 +56,121 @@
       "recentActivity": "So'nggi harakatlar"
     },
     "emptyActivity": "Hozircha hech narsa qayd etilmagan",
-    "viewAll": "Hammasini ko'rish"
+    "viewAll": "Hammasini ko'rish",
+    "cards": {
+      "lastUpdated": "{time} yangilandi",
+      "neverUpdated": "Hali yangilanish yoq",
+      "totalEvents": {
+        "label": "Jami to'ylar"
+      },
+      "totalGifts": {
+        "label": "Jami sovg'alar",
+        "description": "Tanlangan filtrdagi barcha sovgalar"
+      },
+      "totalContributors": {
+        "label": "Jami hissa qoshganlar",
+        "description": "Takrorlanmagan beruvchi ismlari"
+      },
+      "cash": {
+        "label": "Jami {code}",
+        "description": "Faqat pul sovgalari"
+      },
+      "gold": {
+        "label": "Jami tilla",
+        "description": "Qimmatbaho sovgalar ogirligi"
+      },
+      "livestock": {
+        "label": "Chorva",
+        "description": "Chorva sovgalari"
+      },
+      "other": {
+        "label": "Boshqa sovgalar",
+        "description": "Mahsulot va buyumlar"
+      }
+    },
+    "filters": {
+      "title": "Filtrlar",
+      "year": "Yil",
+      "event": "To'y",
+      "giftType": "Sovg'a turi",
+      "currency": "Valyuta",
+      "dateRange": "Sana oraligi",
+      "from": "Boshlanish",
+      "to": "Tugash",
+      "reset": "Filtrlarni tiklash",
+      "allYears": "Barcha yillar",
+      "allEvents": "Barcha to'ylar",
+      "allTypes": "Barcha turlar",
+      "allCurrencies": "Barcha valyutalar"
+    },
+    "charts": {
+      "empty": "Bu filtrlar boyicha hali malumot yoq",
+      "giftsOverTime": {
+        "title": "Vaqt boyicha sovg'alar",
+        "descriptionMonth": "Oyma-oy sovga hajmi",
+        "descriptionYear": "Yilma-yil sovga hajmi",
+        "month": "Oy",
+        "year": "Yil",
+        "giftsLabel": "Sovg'alar"
+      },
+      "giftTypes": {
+        "title": "Sovg'a turlari taqsimoti",
+        "description": "Turlar boyicha ulush",
+        "other": "Boshqa {count}",
+        "countLabel": "Sovg'alar",
+        "shareLabel": "Ulush"
+      },
+      "cash": {
+        "title": "Pul taqsimoti",
+        "description": "Pul jami har valyutada alohida korsatiladi",
+        "meterLabel": "{code}, {count} ta pul sovgasi",
+        "giftCount": "{count, plural, =0 {Pul sovgasi yoq} other {# ta pul sovgasi}}"
+      },
+      "contributorsGrowth": {
+        "title": "Hissa qoshganlar osishi",
+        "description": "Takrorlanmagan beruvchilar jami",
+        "totalLabel": "Jami",
+        "newLabel": "Yangi"
+      },
+      "eventsByYear": {
+        "title": "Yillar boyicha to'ylar",
+        "description": "Har yildagi to'ylar soni",
+        "countLabel": "To'ylar"
+      }
+    },
+    "averages": {
+      "title": "Umumiy o'rtachalar",
+      "description": "Tanlangan to'ylar boyicha o'rtacha qiymatlar",
+      "giftsPerEvent": "Har to'yga sovg'alar",
+      "contributorsPerEvent": "Har to'yga hissa qoshganlar",
+      "livestockPerEvent": "Har to'yga chorva",
+      "goldPerEvent": "Har to'yga tilla",
+      "cashPerEvent": "Har to'yga o'rtacha {code}"
+    },
+    "contributors": {
+      "title": "Top hissa qoshganlar",
+      "description": "Sovga soni boyicha, valyutalarni aralashtirmaydi",
+      "empty": "Hali hissa qoshganlar yoq",
+      "giftCount": "{count, plural, other {# ta sovga}}",
+      "eventCount": "{count, plural, other {# ta toy}}"
+    },
+    "searchAnalytics": {
+      "title": "Qidiruv analitikasi",
+      "description": "Eng kop qidirilgan va ochilgan narsalar",
+      "topTerms": "Top sozlar",
+      "mostOpened": "Ochilishlar",
+      "recent": "Songgi",
+      "emptyTerms": "Hali qidiruv yoq",
+      "emptyEvents": "Hali toy ochilmagan",
+      "emptyRecent": "Songgi qidiruvlar yoq",
+      "searchCount": "{count, plural, other {# ta qidiruv}}",
+      "viewCount": "{count, plural, other {# ta korish}}"
+    },
+    "trend": {
+      "noComparison": "Yangi",
+      "flat": "0%",
+      "label": "{value}% ozgarish"
+    }
   },
   "auth": {
     "verifying": "Telegram hisobingiz tekshirilmoqda…",
@@ -261,5 +377,65 @@
     "conflict": "Bu allaqachon mavjud",
     "unknown": "Xatolik yuz berdi. Qayta urinib ko'ring.",
     "network": "Serverga ulanib bo'lmadi. Aloqani tekshiring."
+  },
+  "reports": {
+    "export": "Eksport",
+    "downloaded": "Hisobot yuklandi",
+    "generatedAt": "Yaratilgan vaqt",
+    "filtered": "Filtrlangan",
+    "titles": {
+      "event": "To'y hisoboti",
+      "contributor": "Hissa qoshganlar hisoboti",
+      "cash": "Pul hisoboti",
+      "giftType": "Sovg'a turi hisoboti",
+      "yearly": "Yillik hisobot"
+    },
+    "formats": {
+      "csv": "CSV",
+      "xlsx": "Excel",
+      "pdf": "PDF"
+    },
+    "summary": {
+      "event": "To'y",
+      "couple": "Juftlik",
+      "date": "Sana",
+      "location": "Manzil",
+      "totalEvents": "Jami to'ylar",
+      "totalGifts": "Jami sovg'alar",
+      "totalContributors": "Jami hissa qoshganlar",
+      "cash": "Pul",
+      "gold": "Tilla",
+      "livestock": "Chorva",
+      "products": "Mahsulotlar",
+      "mostCommon": "Eng kop sovg'a"
+    },
+    "columns": {
+      "rank": "Orin",
+      "giver": "Beruvchi",
+      "giftType": "Sovg'a turi",
+      "category": "Kategoriya",
+      "amount": "Miqdor",
+      "weight": "Ogirlik",
+      "totalWeight": "Jami ogirlik",
+      "description": "Izoh",
+      "giftDate": "Sovga sanasi",
+      "giftCount": "Sovga soni",
+      "events": "To'ylar",
+      "cash": "Pul",
+      "lastGift": "Songgi sovga",
+      "currency": "Valyuta",
+      "total": "Jami",
+      "countShare": "Soni ulushi",
+      "share": "Ulush",
+      "year": "Yil",
+      "contributors": "Hissa qoshganlar"
+    },
+    "tables": {
+      "gifts": "Sovg'alar",
+      "contributors": "Hissa qoshganlar",
+      "cash": "Valyuta boyicha pul",
+      "giftTypes": "Sovg'a turlari",
+      "yearly": "Yillik sovgalar"
+    }
   }
 }

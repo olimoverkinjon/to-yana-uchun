@@ -3,6 +3,8 @@ import "server-only";
 import { cache } from "react";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { demoPermissions } from "@/features/demo/demo-data";
+import { isLocalDemoMode } from "@/shared/lib/local-demo";
 import type { AppError } from "@/shared/lib/errors";
 
 import { getSession } from "./session";
@@ -20,6 +22,8 @@ const NO_ACCESS: Permissions = { isSuperAdmin: false, hasAccess: false, roles: [
  * single round trip.
  */
 export const getPermissions = cache(async (): Promise<Permissions> => {
+  if (isLocalDemoMode()) return demoPermissions;
+
   const session = await getSession();
   if (!session) return NO_ACCESS;
 

@@ -71,7 +71,15 @@ export function GiftList({ eventId, canManage }: GiftListProps) {
         { id: gift.id, eventId, reason },
         {
           onSuccess: () => {
-            toast.success(t("actions.deleted"));
+            toast.success(t("actions.deleted"), {
+              duration: 10_000,
+              action: {
+                label: tCommon("undo"),
+                onClick: () => {
+                  restoreMutation.mutate({ id: gift.id, reason: "Undo delete" }, { onError });
+                },
+              },
+            });
             setConfirming(null);
           },
           onError,
@@ -82,7 +90,15 @@ export function GiftList({ eventId, canManage }: GiftListProps) {
         { id: gift.id, reason },
         {
           onSuccess: () => {
-            toast.success(t("actions.restored"));
+            toast.success(t("actions.restored"), {
+              duration: 10_000,
+              action: {
+                label: tCommon("undo"),
+                onClick: () => {
+                  deleteMutation.mutate({ id: gift.id, eventId, reason: "Undo restore" }, { onError });
+                },
+              },
+            });
             setConfirming(null);
           },
           onError,
