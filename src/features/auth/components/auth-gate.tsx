@@ -68,7 +68,7 @@ export function AuthGate() {
     }
 
     attempted.current = true;
-    authMutation.mutate(rawInitData);
+    authMutation.mutate({ initData: rawInitData, inviteCode: readInviteCode() });
   }, [isReady, isTelegramEnvironment, session.isLoading, signedInUser, authMutation, router]);
 
   useEffect(() => {
@@ -114,4 +114,10 @@ function readTelegramUserId(rawInitData: string): number | null {
   } catch {
     return null;
   }
+}
+
+function readInviteCode(): string | undefined {
+  if (typeof window === "undefined") return undefined;
+  const value = new URLSearchParams(window.location.search).get("invite")?.trim();
+  return value || undefined;
 }

@@ -34,7 +34,7 @@ export function SessionIdentityGuard() {
     if (!telegramUserId || telegramUserId === session.data.user.telegramId) return;
 
     attemptedFor.current = rawInitData;
-    authMutation.mutate(rawInitData);
+    authMutation.mutate({ initData: rawInitData });
   }, [authMutation, isReady, isTelegramEnvironment, session.data?.user, session.isLoading]);
 
   return null;

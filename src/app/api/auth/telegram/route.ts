@@ -10,7 +10,10 @@ import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import type { Database, Json } from "@/lib/supabase/types";
 import { rateLimit, rateLimitHeaders, rateLimitKey } from "@/shared/lib/rate-limit";
 
-const bodySchema = z.object({ initData: z.string().min(1) });
+const bodySchema = z.object({
+  initData: z.string().min(1),
+  inviteCode: z.string().trim().min(1).max(80).optional(),
+});
 const NO_STORE = { "Cache-Control": "no-store" };
 
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
@@ -73,7 +76,7 @@ export async function POST(request: Request) {
 
     await grantRoleIfMissing(supabase, profile.id, "viewer");
     await syncExclusiveSuperAdmin(supabase, profile.id, user.id);
-    await syncGroupMembership(supabase, profile.id, user.id, startParam);
+    await syncGroupMembership(supabase, profile.id, user.id, startParam ?? parsed.data.inviteCode);
 
     await createSession({
       profileId: profile.id,

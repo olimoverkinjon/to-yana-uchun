@@ -7,11 +7,16 @@ import { sessionQueryKey, type SessionState } from "./use-session";
 
 class TelegramAuthError extends Error {}
 
-async function authenticate(initData: string): Promise<AuthenticatedUser> {
+interface TelegramAuthInput {
+  initData: string;
+  inviteCode?: string;
+}
+
+async function authenticate({ initData, inviteCode }: TelegramAuthInput): Promise<AuthenticatedUser> {
   const response = await fetch("/api/auth/telegram", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ initData }),
+    body: JSON.stringify({ initData, inviteCode }),
   });
 
   if (!response.ok) {
