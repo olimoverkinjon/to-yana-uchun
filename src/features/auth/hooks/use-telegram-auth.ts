@@ -3,6 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import type { AuthenticatedUser } from "../types";
+import { sessionQueryKey, type SessionState } from "./use-session";
 
 class TelegramAuthError extends Error {}
 
@@ -47,7 +48,11 @@ export function useTelegramAuthMutation() {
   return useMutation({
     mutationFn: authenticate,
     onSuccess: (user) => {
-      queryClient.setQueryData(["auth", "session"], user);
+      queryClient.setQueryData<SessionState>(sessionQueryKey, {
+        user: { ...user, issuedAt: Date.now() },
+        permissions: null,
+      });
+      void queryClient.invalidateQueries({ queryKey: sessionQueryKey });
     },
   });
 }

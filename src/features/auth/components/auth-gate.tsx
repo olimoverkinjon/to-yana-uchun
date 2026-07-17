@@ -4,7 +4,7 @@ import { retrieveRawInitData } from "@telegram-apps/sdk-react";
 import { RotateCw } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { useTelegramContext } from "@/features/telegram";
@@ -27,6 +27,7 @@ export function AuthGate() {
   const session = useSessionQuery();
   const authMutation = useTelegramAuthMutation();
   const attempted = useRef(false);
+  const [initDataMissing, setInitDataMissing] = useState(false);
 
   // The query always resolves to an object — `{ user: null }` for a signed-out
   // visitor — so signed-in-ness is the presence of `user`, not of `data`.
@@ -50,16 +51,18 @@ export function AuthGate() {
 
     if (rawInitData) {
       authMutation.mutate(rawInitData);
+    } else {
+      setInitDataMissing(true);
     }
   }, [isReady, isTelegramEnvironment, session.isLoading, signedInUser, authMutation, router]);
 
   useEffect(() => {
-    if (signedInUser) {
+    if (signedInUser || authMutation.isSuccess) {
       router.replace("/dashboard");
     }
-  }, [signedInUser, router]);
+  }, [signedInUser, authMutation.isSuccess, router]);
 
-  const hasFailed = (isReady && !isTelegramEnvironment) || authMutation.isError;
+  const hasFailed = (isReady && !isTelegramEnvironment) || authMutation.isError || initDataMissing;
 
   if (hasFailed) {
     return (
@@ -72,6 +75,7 @@ export function AuthGate() {
           variant="outline"
           onClick={() => {
             attempted.current = false;
+            setInitDataMissing(false);
             authMutation.reset();
           }}
         >

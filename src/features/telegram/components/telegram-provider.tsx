@@ -22,7 +22,7 @@ export function TelegramProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let cancelled = false;
 
-    initTelegramSdk()
+    withTimeout(initTelegramSdk(), 6000)
       .then(({ isTelegramEnvironment }) => {
         if (!cancelled) setState({ isReady: true, isTelegramEnvironment });
       })
@@ -37,6 +37,22 @@ export function TelegramProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return <TelegramContext.Provider value={state}>{children}</TelegramContext.Provider>;
+}
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = window.setTimeout(() => reject(new Error("Telegram SDK initialization timed out")), ms);
+    promise.then(
+      (value) => {
+        window.clearTimeout(timer);
+        resolve(value);
+      },
+      (error: unknown) => {
+        window.clearTimeout(timer);
+        reject(error);
+      },
+    );
+  });
 }
 
 export function useTelegramContext(): TelegramContextValue {
