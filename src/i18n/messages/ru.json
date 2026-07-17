@@ -35,6 +35,7 @@
   "nav": {
     "dashboard": "Главная",
     "events": "Свадьбы",
+    "myGifts": "Я дал",
     "search": "Поиск",
     "profile": "Профиль",
     "admin": "Admin"
@@ -312,6 +313,42 @@
       "restored": "Подарок восстановлен",
       "created": "Подарок добавлен",
       "updated": "Подарок изменён"
+    }
+  },
+  "personalGifts": {
+    "title": "Я дал",
+    "subtitle": "Ваш личный список. Другие пользователи его не видят.",
+    "listTitle": "Мои записи",
+    "count": "{count, plural, =0 {Нет записей} one {# запись} few {# записи} many {# записей} other {# записи}}",
+    "created": "Сохранено в личный список",
+    "deleted": "Запись удалена",
+    "saveFailed": "Не удалось сохранить запись",
+    "deleteFailed": "Не удалось удалить запись",
+    "delete": "Удалить",
+    "deleteTitle": "Удалить эту личную запись?",
+    "deleteBody": "Она будет скрыта из вашего списка. Отменить можно в течение 10 секунд.",
+    "empty": "Личных записей пока нет",
+    "emptyBody": "Запишите для себя, что вы дали на свадьбу.",
+    "table": {
+      "event": "Свадьба",
+      "gift": "Подарок",
+      "date": "Дата",
+      "actions": "Действия"
+    },
+    "form": {
+      "eventTitle": "Свадьба",
+      "eventPlaceholder": "Свадьба Эркинжона",
+      "recipientName": "Человек или семья",
+      "recipientPlaceholder": "Эркинжон",
+      "amount": "Сумма",
+      "currency": "Валюта",
+      "description": "Что вы дали",
+      "descriptionHint": "Обязательно, если сумма не указана.",
+      "descriptionPlaceholder": "5 кг мяса, бытовая техника...",
+      "giftDate": "Дата",
+      "notes": "Заметки",
+      "notesPlaceholder": "Это видите только вы",
+      "submit": "Добавить в мой список"
     }
   },
   "search": {

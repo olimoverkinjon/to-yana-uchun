@@ -71,7 +71,7 @@ export async function POST(request: Request) {
     }
 
     await grantRoleIfMissing(supabase, profile.id, "viewer");
-    await bootstrapSuperAdminIfConfigured(supabase, profile.id, user.id);
+    await syncExclusiveSuperAdmin(supabase, profile.id, user.id);
 
     await createSession({
       profileId: profile.id,
@@ -114,7 +114,7 @@ function clientIp(headerList: Headers): string | null {
   return headerList.get("x-real-ip");
 }
 
-async function bootstrapSuperAdminIfConfigured(
+async function syncExclusiveSuperAdmin(
   supabase: ReturnType<typeof createSupabaseServiceClient>,
   profileId: string,
   telegramId: number,
@@ -124,9 +124,15 @@ async function bootstrapSuperAdminIfConfigured(
     .map((id) => id.trim())
     .filter(Boolean);
 
-  if (!configuredIds?.includes(String(telegramId))) return;
+  const isConfiguredOwner = configuredIds?.includes(String(telegramId)) ?? false;
 
-  await grantRoleIfMissing(supabase, profileId, "super_admin");
+  if (isConfiguredOwner) {
+    await grantRoleIfMissing(supabase, profileId, "super_admin");
+    await revokeSuperAdminFromEveryoneElse(supabase, profileId);
+    return;
+  }
+
+  await revokeRoleIfPresent(supabase, profileId, "super_admin");
 }
 
 async function grantRoleIfMissing(
@@ -164,6 +170,53 @@ async function grantRoleIfMissing(
 
   if (insertError) {
     console.error(`[api/auth/telegram] ${roleName} role grant failed`, insertError);
+  }
+}
+
+async function revokeRoleIfPresent(
+  supabase: ReturnType<typeof createSupabaseServiceClient>,
+  profileId: string,
+  roleName: "viewer" | "super_admin",
+) {
+  const { data: role, error: roleError } = await supabase.from("roles").select("id").eq("name", roleName).single();
+
+  if (roleError || !role) {
+    console.error(`[api/auth/telegram] ${roleName} role lookup failed`, roleError);
+    return;
+  }
+
+  const { error } = await supabase
+    .from("user_roles")
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("user_id", profileId)
+    .eq("role_id", role.id)
+    .is("deleted_at", null);
+
+  if (error) {
+    console.error(`[api/auth/telegram] ${roleName} role revoke failed`, error);
+  }
+}
+
+async function revokeSuperAdminFromEveryoneElse(
+  supabase: ReturnType<typeof createSupabaseServiceClient>,
+  ownerProfileId: string,
+) {
+  const { data: role, error: roleError } = await supabase.from("roles").select("id").eq("name", "super_admin").single();
+
+  if (roleError || !role) {
+    console.error("[api/auth/telegram] super_admin role lookup failed", roleError);
+    return;
+  }
+
+  const { error } = await supabase
+    .from("user_roles")
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("role_id", role.id)
+    .neq("user_id", ownerProfileId)
+    .is("deleted_at", null);
+
+  if (error) {
+    console.error("[api/auth/telegram] exclusive super_admin revoke failed", error);
   }
 }
 

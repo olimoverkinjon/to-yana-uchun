@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import type { MouseEvent } from "react";
 
 import { cn } from "@/lib/utils";
+import { usePermissions } from "@/features/auth";
 
 import { navItems } from "../lib/nav-items";
 
@@ -13,10 +14,17 @@ import { navItems } from "../lib/nav-items";
 export function BottomNav() {
   const pathname = usePathname();
   const t = useTranslations("nav");
+  const { isSuperAdmin } = usePermissions();
+  const visibleItems = navItems.filter((item) => !item.superAdminOnly || isSuperAdmin);
 
   return (
-    <nav className="glass-panel fixed inset-x-2 bottom-[calc(0.6rem+env(safe-area-inset-bottom))] z-40 grid grid-cols-5 items-center rounded-2xl px-1.5 py-1.5 sm:hidden">
-      {navItems.map((item) => {
+    <nav
+      className={cn(
+        "glass-panel fixed inset-x-2 bottom-[calc(0.6rem+env(safe-area-inset-bottom))] z-40 grid items-center rounded-2xl px-1.5 py-1.5 sm:hidden",
+        visibleItems.length <= 4 ? "grid-cols-4" : "grid-cols-5",
+      )}
+    >
+      {visibleItems.map((item) => {
         const isActive = pathname === item.href;
         const Icon = item.icon;
 

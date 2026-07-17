@@ -7,6 +7,7 @@ import { LogOut, Settings, Shield, User } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { usePermissions } from "@/features/auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,6 +30,7 @@ export function AppHeader() {
   const tCommon = useTranslations("common");
   const telegramUser = useTelegramUser();
   const session = useSessionQuery();
+  const { isSuperAdmin } = usePermissions();
   const sessionUser = session.data?.user;
   const user = telegramUser
     ? {
@@ -46,7 +48,8 @@ export function AppHeader() {
 
   const displayName = [user.firstName, user.lastName].filter(Boolean).join(" ") || user.username || "Local Admin";
   const initials = `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.trim().toUpperCase() || "U";
-  const currentItem = navItems.find((item) => pathname === item.href);
+  const visibleItems = navItems.filter((item) => !item.superAdminOnly || isSuperAdmin);
+  const currentItem = visibleItems.find((item) => pathname === item.href);
 
   return (
     <header className="glass-panel sticky top-0 z-30 flex h-14 items-center justify-between gap-2 px-3 sm:h-16 sm:gap-4 sm:px-6">
@@ -63,7 +66,7 @@ export function AppHeader() {
         ) : null}
 
         <nav className="hidden items-center gap-1 sm:flex">
-          {navItems.map((item) => {
+          {visibleItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
@@ -85,8 +88,10 @@ export function AppHeader() {
       </div>
 
       <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
-        <LanguageSwitcher />
-        <ThemeSwitcher />
+        <div className="hidden items-center gap-1 sm:flex">
+          <LanguageSwitcher />
+          <ThemeSwitcher />
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
@@ -108,14 +113,18 @@ export function AppHeader() {
               <User className="mr-2 size-4" />
               {t("profile")}
             </DropdownMenuItem>
-            <DropdownMenuItem render={<Link href="/admin" />}>
-              <Shield className="mr-2 size-4" />
-              {t("admin")}
-            </DropdownMenuItem>
-            <DropdownMenuItem render={<Link href="/admin/settings" />}>
-              <Settings className="mr-2 size-4" />
-              Settings
-            </DropdownMenuItem>
+            {isSuperAdmin ? (
+              <>
+                <DropdownMenuItem render={<Link href="/admin" />}>
+                  <Shield className="mr-2 size-4" />
+                  {t("admin")}
+                </DropdownMenuItem>
+                <DropdownMenuItem render={<Link href="/admin/settings" />}>
+                  <Settings className="mr-2 size-4" />
+                  Settings
+                </DropdownMenuItem>
+              </>
+            ) : null}
             <DropdownMenuSeparator />
             <DropdownMenuItem render={<a href="/api/auth/logout" />}>
               <LogOut className="mr-2 size-4" />

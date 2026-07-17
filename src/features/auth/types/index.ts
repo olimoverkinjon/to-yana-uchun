@@ -1,4 +1,5 @@
 export interface AuthenticatedUser {
+  profileId?: string;
   telegramId: number;
   firstName: string;
   lastName?: string;

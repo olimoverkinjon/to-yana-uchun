@@ -35,6 +35,7 @@
   "nav": {
     "dashboard": "Bosh sahifa",
     "events": "To'ylar",
+    "myGifts": "Men berdim",
     "search": "Qidiruv",
     "profile": "Profil",
     "admin": "Admin"
@@ -312,6 +313,42 @@
       "restored": "Sovg'a tiklandi",
       "created": "Sovg'a qo'shildi",
       "updated": "Sovg'a yangilandi"
+    }
+  },
+  "personalGifts": {
+    "title": "Men berganlarim",
+    "subtitle": "Bu shaxsiy ro'yxat. Boshqa userlar buni ko'ra olmaydi.",
+    "listTitle": "Mening yozuvlarim",
+    "count": "{count, plural, =0 {Yozuv yo'q} other {# ta yozuv}}",
+    "created": "Shaxsiy ro'yxatingizga saqlandi",
+    "deleted": "Yozuv o'chirildi",
+    "saveFailed": "Yozuvni saqlab bo'lmadi",
+    "deleteFailed": "Yozuvni o'chirib bo'lmadi",
+    "delete": "O'chirish",
+    "deleteTitle": "Bu shaxsiy yozuv o'chirilsinmi?",
+    "deleteBody": "U ro'yxatingizdan yashiriladi. 10 soniya ichida bekor qilish mumkin.",
+    "empty": "Hozircha shaxsiy yozuv yo'q",
+    "emptyBody": "Qaysi to'yga nima berganingizni o'zingiz uchun yozib qo'ying.",
+    "table": {
+      "event": "To'y",
+      "gift": "Nima berdim",
+      "date": "Sana",
+      "actions": "Amallar"
+    },
+    "form": {
+      "eventTitle": "To'y",
+      "eventPlaceholder": "Erkinjon to'yi",
+      "recipientName": "Kimga yoki qaysi oila",
+      "recipientPlaceholder": "Erkinjon",
+      "amount": "Pul miqdori",
+      "currency": "Valyuta",
+      "description": "Nima berdingiz",
+      "descriptionHint": "Pul kiritmasangiz, bu joy majburiy.",
+      "descriptionPlaceholder": "5 kg go'sht, uy jihozi...",
+      "giftDate": "Sana",
+      "notes": "Izoh",
+      "notesPlaceholder": "Buni faqat o'zingiz ko'rasiz",
+      "submit": "Ro'yxatimga qo'shish"
     }
   },
   "search": {

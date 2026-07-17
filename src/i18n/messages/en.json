@@ -35,6 +35,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "events": "Events",
+    "myGifts": "I gave",
     "search": "Search",
     "profile": "Profile",
     "admin": "Admin"
@@ -312,6 +313,42 @@
       "restored": "Gift restored",
       "created": "Gift added",
       "updated": "Gift updated"
+    }
+  },
+  "personalGifts": {
+    "title": "I gave",
+    "subtitle": "Your private list. Other users cannot see these records.",
+    "listTitle": "My records",
+    "count": "{count, plural, =0 {No records} one {# record} other {# records}}",
+    "created": "Saved to your private list",
+    "deleted": "Record deleted",
+    "saveFailed": "Could not save this record",
+    "deleteFailed": "Could not delete this record",
+    "delete": "Delete",
+    "deleteTitle": "Delete this private record?",
+    "deleteBody": "It will be hidden from your list. You can undo for 10 seconds.",
+    "empty": "No private records yet",
+    "emptyBody": "Add what you gave to a wedding, for your own memory.",
+    "table": {
+      "event": "Wedding",
+      "gift": "Gift",
+      "date": "Date",
+      "actions": "Actions"
+    },
+    "form": {
+      "eventTitle": "Wedding",
+      "eventPlaceholder": "Erkinjon's wedding",
+      "recipientName": "Person or family",
+      "recipientPlaceholder": "Erkinjon",
+      "amount": "Amount",
+      "currency": "Currency",
+      "description": "What you gave",
+      "descriptionHint": "Required if you do not enter money.",
+      "descriptionPlaceholder": "5 kg meat, household item...",
+      "giftDate": "Date",
+      "notes": "Notes",
+      "notesPlaceholder": "Only you can see this",
+      "submit": "Add to my list"
     }
   },
   "search": {

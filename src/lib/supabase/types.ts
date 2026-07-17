@@ -538,6 +538,73 @@ export type Database = {
           },
         ];
       };
+      personal_gifts: {
+        Row: {
+          amount: number | null;
+          created_at: string;
+          currency_id: string | null;
+          deleted_at: string | null;
+          description: string | null;
+          event_title: string;
+          gift_date: string;
+          id: string;
+          notes: string | null;
+          recipient_name: string | null;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          amount?: number | null;
+          created_at?: string;
+          currency_id?: string | null;
+          deleted_at?: string | null;
+          description?: string | null;
+          event_title: string;
+          gift_date?: string;
+          id?: string;
+          notes?: string | null;
+          recipient_name?: string | null;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          amount?: number | null;
+          created_at?: string;
+          currency_id?: string | null;
+          deleted_at?: string | null;
+          description?: string | null;
+          event_title?: string;
+          gift_date?: string;
+          id?: string;
+          notes?: string | null;
+          recipient_name?: string | null;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "personal_gifts_currency_id_fkey";
+            columns: ["currency_id"];
+            isOneToOne: false;
+            referencedRelation: "currencies";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "personal_gifts_currency_id_fkey";
+            columns: ["currency_id"];
+            isOneToOne: false;
+            referencedRelation: "event_cash_totals";
+            referencedColumns: ["currency_id"];
+          },
+          {
+            foreignKeyName: "personal_gifts_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       profiles: {
         Row: {
           created_at: string;
