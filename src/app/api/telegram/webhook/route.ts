@@ -9,15 +9,24 @@ const BOT_USERNAME = "KotibAi_bot";
 interface TelegramUpdate {
   message?: {
     chat?: { id?: number };
-    from?: { id?: number; first_name?: string };
+    from?: TelegramFrom;
     text?: string;
   };
   callback_query?: {
     id: string;
     data?: string;
-    from?: { id?: number };
+    from?: TelegramFrom;
     message?: { chat?: { id?: number } };
   };
+}
+
+interface TelegramFrom {
+  id?: number;
+  first_name?: string;
+  last_name?: string;
+  username?: string;
+  language_code?: string;
+  is_premium?: boolean;
 }
 
 type InlineKeyboard = Array<Array<Record<string, unknown>>>;
@@ -31,6 +40,7 @@ export async function POST(request: Request) {
 
   const chatId = update?.message?.chat?.id;
   if (!chatId) return NextResponse.json({ ok: true }, { headers: NO_STORE });
+  if (update.message?.from) await upsertBotProfile(update.message.from);
 
   const text = update?.message?.text?.trim() ?? "";
   const command = parseCommand(text);
@@ -129,7 +139,30 @@ async function sendInviteLink(chatId: number, telegramId?: number) {
   );
 }
 
+async function upsertBotProfile(from: TelegramFrom) {
+  if (!from.id || !from.first_name) return null;
+
+  const supabase = createSupabaseServiceClient();
+  const { data, error } = await supabase.rpc("upsert_telegram_profile", {
+    p_telegram_id: from.id,
+    p_first_name: from.first_name,
+    p_is_premium: from.is_premium ?? false,
+    p_username: (from.username ?? null) as unknown as string,
+    p_last_name: (from.last_name ?? null) as unknown as string,
+    p_photo_url: null as unknown as string,
+    p_language_code: (from.language_code ?? null) as unknown as string,
+  });
+
+  if (error) {
+    console.error("[telegram:webhook] profile upsert failed", error);
+    return null;
+  }
+
+  return data;
+}
+
 async function handleCallbackQuery(query: NonNullable<TelegramUpdate["callback_query"]>) {
+  if (query.from) await upsertBotProfile(query.from);
   const chatId = query.message?.chat?.id;
   if (!chatId) {
     await answerCallbackQuery(query.id);

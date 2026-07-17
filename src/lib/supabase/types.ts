@@ -1380,6 +1380,25 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      ensure_user_owned_group: {
+        Args: { p_user_id: string };
+        Returns: {
+          created_at: string;
+          deleted_at: string | null;
+          id: string;
+          invite_code: string;
+          name: string;
+          owner_id: string | null;
+          slug: string;
+          updated_at: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "groups";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       event_statistics: {
         Args: { p_event_id: string };
         Returns: {
