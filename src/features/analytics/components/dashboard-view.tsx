@@ -76,20 +76,23 @@ export function DashboardView() {
   const activity = useRecentActivityQuery(8, { enabled: isSuperAdmin });
 
   return (
-    <div className="space-y-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="space-y-1">
-          <h1 className="text-foreground text-2xl font-semibold tracking-tight">{t("title")}</h1>
-          {user ? <p className="text-muted-foreground text-sm">{t("greeting", { name: user.first_name })}</p> : null}
+    <div className="space-y-4 sm:space-y-5">
+      <div className="space-y-3 sm:flex sm:items-start sm:justify-between sm:gap-3 sm:space-y-0">
+        <div className="min-w-0 space-y-0.5">
+          <h1 className="text-foreground truncate text-xl font-semibold tracking-tight sm:text-2xl">{t("title")}</h1>
+          {user ? (
+            <p className="text-muted-foreground truncate text-xs sm:text-sm">
+              {t("greeting", { name: user.first_name })}
+            </p>
+          ) : null}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <RealtimeIndicator />
           <ExportMenu filters={filters} />
+          <DashboardFiltersBar state={filterState} />
         </div>
       </div>
-
-      <DashboardFiltersBar state={filterState} />
 
       <DashboardStatGrid filters={filters} />
 

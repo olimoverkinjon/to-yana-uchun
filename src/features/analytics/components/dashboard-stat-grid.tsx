@@ -43,7 +43,7 @@ export function DashboardStatGrid({ filters }: DashboardStatGridProps) {
 
   if (query.isLoading || !query.data) {
     return (
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 9 }, (_, index) => (
           <StatTileSkeleton key={index} />
         ))}
@@ -56,7 +56,7 @@ export function DashboardStatGrid({ filters }: DashboardStatGridProps) {
   const updatedLine = lastUpdated ? t("lastUpdated", { time: lastUpdated }) : t("neverUpdated");
 
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
       <StatTile
         index={0}
         icon={CalendarHeart}

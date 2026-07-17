@@ -15,7 +15,7 @@ export function BottomNav() {
   const t = useTranslations("nav");
 
   return (
-    <nav className="glass-panel fixed inset-x-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 flex items-center justify-around rounded-2xl px-2 py-2 sm:hidden">
+    <nav className="glass-panel fixed inset-x-2 bottom-[calc(0.6rem+env(safe-area-inset-bottom))] z-40 grid grid-cols-5 items-center rounded-2xl px-1.5 py-1.5 sm:hidden">
       {navItems.map((item) => {
         const isActive = pathname === item.href;
         const Icon = item.icon;
@@ -32,14 +32,14 @@ export function BottomNav() {
             aria-current={isActive ? "page" : undefined}
             onClick={handleClick}
             className={cn(
-              "flex min-w-16 flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-[11px] font-medium transition-colors",
+              "flex min-w-0 flex-col items-center gap-0.5 rounded-xl px-1 py-1.5 text-[10px] leading-none font-medium transition-colors",
               isActive && "text-primary",
               !isActive && item.enabled && "text-muted-foreground hover:text-foreground",
               !item.enabled && "text-muted-foreground/40",
             )}
           >
-            <Icon className="size-5" strokeWidth={isActive ? 2.4 : 2} />
-            {t(item.id)}
+            <Icon className="size-5 shrink-0" strokeWidth={isActive ? 2.4 : 2} />
+            <span className="max-w-full truncate">{t(item.id)}</span>
           </Link>
         );
       })}

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { LogOut, Settings, Shield, User } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,16 +46,21 @@ export function AppHeader() {
 
   const displayName = [user.firstName, user.lastName].filter(Boolean).join(" ") || user.username || "Local Admin";
   const initials = `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.trim().toUpperCase() || "U";
+  const currentItem = navItems.find((item) => pathname === item.href);
 
   return (
-    <header className="glass-panel sticky top-0 z-30 flex h-16 items-center justify-between gap-4 px-4 sm:px-6">
-      <div className="flex items-center gap-8">
+    <header className="glass-panel sticky top-0 z-30 flex h-14 items-center justify-between gap-2 px-3 sm:h-16 sm:gap-4 sm:px-6">
+      <div className="flex min-w-0 items-center gap-2 sm:gap-8">
         <Link href="/dashboard" className="text-foreground flex items-center gap-2 font-semibold tracking-tight">
           <span className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-xl text-sm">
             WR
           </span>
           <span className="hidden sm:inline">{tCommon("appName")}</span>
         </Link>
+
+        {currentItem ? (
+          <span className="text-foreground truncate text-sm font-semibold sm:hidden">{t(currentItem.id)}</span>
+        ) : null}
 
         <nav className="hidden items-center gap-1 sm:flex">
           {navItems.map((item) => {
@@ -78,11 +84,15 @@ export function AppHeader() {
         </nav>
       </div>
 
-      <div className="flex items-center gap-1">
+      <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
         <LanguageSwitcher />
         <ThemeSwitcher />
         <DropdownMenu>
-          <DropdownMenuTrigger className="focus-visible:ring-ring ml-1 rounded-full outline-none focus-visible:ring-2">
+          <DropdownMenuTrigger
+            render={
+              <Button variant="ghost" size="icon" className="ml-0.5 rounded-full sm:ml-1" aria-label="Open profile" />
+            }
+          >
             <Avatar className="size-8">
               <AvatarImage src={user.photoUrl} alt={displayName} />
               <AvatarFallback className="text-xs">{initials}</AvatarFallback>

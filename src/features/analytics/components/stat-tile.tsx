@@ -59,16 +59,16 @@ export function StatTile({
       transition={{ duration: 0.35, delay: Math.min(index, 8) * 0.04, ease: [0.16, 1, 0.3, 1] }}
     >
       <Card className="glass-panel h-full gap-0 border-0 py-0 ring-0 transition-shadow duration-300 hover:shadow-lg">
-        <CardContent className="flex h-full flex-col gap-3 p-4 sm:p-5">
+        <CardContent className="flex h-full min-h-36 flex-col gap-3 p-4 sm:min-h-44 sm:p-5">
           <div className="flex items-start justify-between gap-2">
-            <span className="text-muted-foreground text-xs font-medium sm:text-sm">{label}</span>
+            <span className="text-muted-foreground line-clamp-2 text-xs font-medium sm:text-sm">{label}</span>
             <span className="bg-primary/10 text-primary flex size-8 shrink-0 items-center justify-center rounded-xl">
               <Icon className="size-4" />
             </span>
           </div>
 
           <div className="space-y-1">
-            <p className="text-foreground text-xl font-semibold tracking-tight tabular-nums sm:text-2xl">
+            <p className="text-foreground truncate text-xl font-semibold tracking-tight tabular-nums sm:text-2xl">
               {formattedValue ?? format.number(animated, { maximumFractionDigits: fractionDigits })}
             </p>
 
@@ -84,7 +84,11 @@ export function StatTile({
           </div>
 
           <div className={cn("mt-auto flex flex-wrap items-center justify-between gap-x-2 gap-y-1 pt-1")}>
-            {description ? <span className="text-muted-foreground text-[11px]">{description}</span> : <span />}
+            {description ? (
+              <span className="text-muted-foreground line-clamp-2 text-[11px]">{description}</span>
+            ) : (
+              <span />
+            )}
             {trend !== undefined ? <TrendBadge value={trend} /> : null}
           </div>
         </CardContent>
@@ -96,7 +100,7 @@ export function StatTile({
 export function StatTileSkeleton() {
   return (
     <Card className="glass-panel h-full gap-0 border-0 py-0 ring-0">
-      <CardContent className="flex h-full flex-col gap-3 p-4 sm:p-5">
+      <CardContent className="flex h-full min-h-36 flex-col gap-3 p-4 sm:min-h-44 sm:p-5">
         <div className="flex items-start justify-between">
           <Skeleton className="h-3.5 w-20" />
           <Skeleton className="size-8 rounded-xl" />
