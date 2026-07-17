@@ -70,6 +70,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "internal_error" }, { status: 500, headers: NO_STORE });
     }
 
+    await grantRoleIfMissing(supabase, profile.id, "viewer");
     await bootstrapSuperAdminIfConfigured(supabase, profile.id, user.id);
 
     await createSession({
@@ -125,10 +126,18 @@ async function bootstrapSuperAdminIfConfigured(
 
   if (!configuredIds?.includes(String(telegramId))) return;
 
-  const { data: role, error: roleError } = await supabase.from("roles").select("id").eq("name", "super_admin").single();
+  await grantRoleIfMissing(supabase, profileId, "super_admin");
+}
+
+async function grantRoleIfMissing(
+  supabase: ReturnType<typeof createSupabaseServiceClient>,
+  profileId: string,
+  roleName: "viewer" | "super_admin",
+) {
+  const { data: role, error: roleError } = await supabase.from("roles").select("id").eq("name", roleName).single();
 
   if (roleError || !role) {
-    console.error("[api/auth/telegram] bootstrap role lookup failed", roleError);
+    console.error(`[api/auth/telegram] ${roleName} role lookup failed`, roleError);
     return;
   }
 
@@ -141,7 +150,7 @@ async function bootstrapSuperAdminIfConfigured(
     .maybeSingle();
 
   if (existingError) {
-    console.error("[api/auth/telegram] bootstrap role check failed", existingError);
+    console.error(`[api/auth/telegram] ${roleName} role check failed`, existingError);
     return;
   }
 
@@ -154,7 +163,7 @@ async function bootstrapSuperAdminIfConfigured(
   });
 
   if (insertError) {
-    console.error("[api/auth/telegram] bootstrap role grant failed", insertError);
+    console.error(`[api/auth/telegram] ${roleName} role grant failed`, insertError);
   }
 }
 
