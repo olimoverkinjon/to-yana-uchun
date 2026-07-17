@@ -59,6 +59,7 @@ export function AuthGate() {
   useEffect(() => {
     if (signedInUser || authMutation.isSuccess) {
       router.replace("/dashboard");
+      router.refresh();
     }
   }, [signedInUser, authMutation.isSuccess, router]);
 

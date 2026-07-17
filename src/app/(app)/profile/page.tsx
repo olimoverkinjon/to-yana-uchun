@@ -1,4 +1,5 @@
 import { Crown, Languages, ShieldCheck, UserRound } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -11,6 +12,7 @@ export default async function ProfilePage() {
   const session = await getSession();
   if (!session) redirect("/");
 
+  const t = await getTranslations("profile");
   const permissions = await getPermissions();
   const displayName = [session.firstName, session.lastName].filter(Boolean).join(" ") || session.username || "User";
   const initials = `${session.firstName?.[0] ?? ""}${session.lastName?.[0] ?? ""}`.trim().toUpperCase() || "U";
@@ -26,38 +28,38 @@ export default async function ProfilePage() {
                 <AvatarFallback className="text-lg font-semibold">{initials}</AvatarFallback>
               </Avatar>
               <div>
-                <p className="text-muted-foreground text-sm font-medium">Profile</p>
+                <p className="text-muted-foreground text-sm font-medium">{t("eyebrow")}</p>
                 <h1 className="text-2xl font-semibold tracking-tight">{displayName}</h1>
                 <p className="text-muted-foreground text-sm">@{session.username ?? "telegram_user"}</p>
               </div>
             </div>
             <div className="bg-background/80 flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium shadow-sm">
               <ShieldCheck className="text-primary size-4" />
-              {permissions.isSuperAdmin ? "Super Admin" : permissions.hasAccess ? "Viewer" : "No access"}
+              {permissions.isSuperAdmin ? t("superAdmin") : permissions.hasAccess ? t("viewer") : t("noAccess")}
             </div>
           </div>
         </div>
 
         <div className="grid gap-4 p-4 sm:grid-cols-3 sm:p-6">
-          <InfoCard icon={UserRound} label="Telegram ID" value={String(session.telegramId)} />
-          <InfoCard icon={Languages} label="Language" value={(session.languageCode ?? "uz").toUpperCase()} />
-          <InfoCard icon={Crown} label="Premium" value={session.isPremium ? "Enabled" : "Not enabled"} />
+          <InfoCard icon={UserRound} label={t("telegramId")} value={String(session.telegramId)} />
+          <InfoCard icon={Languages} label={t("language")} value={(session.languageCode ?? "uz").toUpperCase()} />
+          <InfoCard icon={Crown} label={t("premium")} value={session.isPremium ? t("enabled") : t("notEnabled")} />
         </div>
       </section>
 
       <section className="grid gap-4 sm:grid-cols-2">
         <div className="bg-card rounded-2xl border p-5 shadow-sm">
           <div className="mb-4">
-            <h2 className="font-semibold tracking-tight">Language</h2>
-            <p className="text-muted-foreground text-sm">Switch Uzbek, Russian or English instantly.</p>
+            <h2 className="font-semibold tracking-tight">{t("language")}</h2>
+            <p className="text-muted-foreground text-sm">{t("languageDescription")}</p>
           </div>
           <LanguageSwitcher />
         </div>
 
         <div className="bg-card rounded-2xl border p-5 shadow-sm">
           <div className="mb-4">
-            <h2 className="font-semibold tracking-tight">Theme</h2>
-            <p className="text-muted-foreground text-sm">Use light, dark, system or Telegram theme.</p>
+            <h2 className="font-semibold tracking-tight">{t("theme")}</h2>
+            <p className="text-muted-foreground text-sm">{t("themeDescription")}</p>
           </div>
           <ThemeSwitcher />
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -25,12 +26,13 @@ export function AdminUsersTable({
   roles: RoleRow[];
   query: Record<string, string | number | undefined>;
 }) {
+  const t = useTranslations("adminUsers");
   const [roleDrafts, setRoleDrafts] = useState<Record<string, string>>({});
 
   const columns: AdminColumn<AdminUser>[] = [
     {
       id: "profile",
-      label: "User",
+      label: t("user"),
       render: (user) => (
         <div className="flex items-center gap-2">
           <Avatar className="size-8">
@@ -55,7 +57,7 @@ export function AdminUsersTable({
     },
     {
       id: "role",
-      label: "Role",
+      label: t("role"),
       render: (user) => {
         const active = user.roles[0];
         const value = roleDrafts[user.id] ?? active?.id ?? "";
@@ -66,7 +68,7 @@ export function AdminUsersTable({
               onValueChange={(next) => setRoleDrafts((draft) => ({ ...draft, [user.id]: next ?? "" }))}
             >
               <SelectTrigger size="sm" className="w-36">
-                <SelectValue placeholder="No role" />
+                <SelectValue placeholder={t("noRole")} />
               </SelectTrigger>
               <SelectContent>
                 {roles.map((role) => (
@@ -77,28 +79,30 @@ export function AdminUsersTable({
               </SelectContent>
             </Select>
             <AdminActionButton
-              label="Apply"
-              title="Change this user's role?"
-              description="Role changes affect what this person can see or edit immediately."
+              label={t("apply")}
+              title={t("changeRoleTitle")}
+              description={t("changeRoleDescription")}
               action={(reason) => setUserRoleAction({ userId: user.id, roleId: value, reason })}
-              success="Role updated"
+              success={t("roleUpdated")}
             />
           </div>
         );
       },
     },
-    { id: "language", label: "Language", render: (user) => user.language_code ?? "-" },
+    { id: "language", label: t("language"), render: (user) => user.language_code ?? "-" },
     {
       id: "status",
-      label: "Status",
+      label: t("status"),
       render: (user) => (
-        <Badge variant={user.deleted_at ? "destructive" : "secondary"}>{user.deleted_at ? "Disabled" : "Active"}</Badge>
+        <Badge variant={user.deleted_at ? "destructive" : "secondary"}>
+          {user.deleted_at ? t("disabled") : t("active")}
+        </Badge>
       ),
     },
-    { id: "created", label: "Created", render: (user) => new Date(user.created_at).toLocaleDateString() },
+    { id: "created", label: t("created"), render: (user) => new Date(user.created_at).toLocaleDateString() },
     {
       id: "lastLogin",
-      label: "Last login",
+      label: t("lastLogin"),
       render: (user) => (user.last_seen_at ? new Date(user.last_seen_at).toLocaleDateString() : "-"),
     },
     {
@@ -107,19 +111,15 @@ export function AdminUsersTable({
       render: (user) => (
         <div className="flex justify-end gap-2">
           <Button variant="outline" size="sm" render={<Link href={`/admin/users/${user.id}`} />}>
-            View
+            {t("view")}
           </Button>
           <AdminActionButton
-            label={user.deleted_at ? "Restore" : "Delete"}
-            title={user.deleted_at ? "Restore this user?" : "Delete this user?"}
-            description={
-              user.deleted_at
-                ? "The user will regain access according to their active role."
-                : "This is a soft delete. The user is disabled and can be restored."
-            }
+            label={user.deleted_at ? t("restore") : t("delete")}
+            title={user.deleted_at ? t("restoreTitle") : t("deleteTitle")}
+            description={user.deleted_at ? t("restoreDescription") : t("deleteDescription")}
             variant={user.deleted_at ? "default" : "destructive"}
             action={(reason) => setUserDisabledAction({ userId: user.id, disabled: !user.deleted_at, reason })}
-            success={user.deleted_at ? "User restored" : "User deleted"}
+            success={user.deleted_at ? t("userRestored") : t("userDeleted")}
             undo={
               user.deleted_at
                 ? () => setUserDisabledAction({ userId: user.id, disabled: true, reason: "Undo restore" })
@@ -140,7 +140,7 @@ export function AdminUsersTable({
       pageSize={users.pageSize}
       basePath="/admin/users"
       query={query}
-      empty={<EmptyState icon={Users} title="No users found" body="Try changing the search, role or status filters." />}
+      empty={<EmptyState icon={Users} title={t("empty")} body={t("emptyBody")} />}
     />
   );
 }

@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { defaultLocale, isLocale, localeCookieName, locales } from "@/i18n/config";
+import { isLocale, localeCookieName, normalizeLocale } from "@/i18n/config";
 
 /**
  * Resolves the visitor's locale on first contact only. There is no
@@ -16,7 +16,7 @@ export function middleware(request: NextRequest) {
   }
 
   const acceptLanguage = request.headers.get("accept-language") ?? "";
-  const negotiated = locales.find((locale) => acceptLanguage.toLowerCase().includes(locale)) ?? defaultLocale;
+  const negotiated = normalizeLocale(acceptLanguage);
 
   const response = NextResponse.next();
   response.cookies.set(localeCookieName, negotiated, {

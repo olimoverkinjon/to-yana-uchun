@@ -121,14 +121,14 @@ export function AppHeader() {
                 </DropdownMenuItem>
                 <DropdownMenuItem render={<Link href="/admin/settings" />}>
                   <Settings className="mr-2 size-4" />
-                  Settings
+                  {t("settings")}
                 </DropdownMenuItem>
               </>
             ) : null}
             <DropdownMenuSeparator />
             <DropdownMenuItem render={<a href="/api/auth/logout" />}>
               <LogOut className="mr-2 size-4" />
-              Logout
+              {t("logout")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

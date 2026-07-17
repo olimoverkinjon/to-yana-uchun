@@ -15,3 +15,11 @@ export const localeLabels: Record<Locale, string> = {
 export function isLocale(value: string | undefined | null): value is Locale {
   return !!value && (locales as readonly string[]).includes(value);
 }
+
+export function normalizeLocale(value: string | undefined | null): Locale {
+  const base = value
+    ?.toLowerCase()
+    .split(/[,\-_;]/)[0]
+    ?.trim();
+  return isLocale(base) ? base : defaultLocale;
+}

@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { createSession } from "@/features/auth/api/session";
 import { InitDataVerificationError, verifyTelegramInitData } from "@/features/auth/api/verify-init-data";
+import { localeCookieName, normalizeLocale } from "@/i18n/config";
 import { serverEnv } from "@/lib/env";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import type { Database, Json } from "@/lib/supabase/types";
@@ -92,7 +93,13 @@ export async function POST(request: Request) {
       user_agent: userAgent,
     });
 
-    return NextResponse.json({ ok: true, user }, { headers: NO_STORE });
+    const response = NextResponse.json({ ok: true, user }, { headers: NO_STORE });
+    response.cookies.set(localeCookieName, normalizeLocale(user.languageCode), {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: "lax",
+    });
+    return response;
   } catch (error) {
     if (error instanceof InitDataVerificationError) {
       await logSecurityEvent("auth", "warning", "Telegram initData verification failed", { ipAddress, userAgent });
