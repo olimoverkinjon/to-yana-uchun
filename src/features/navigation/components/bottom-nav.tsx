@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import type { MouseEvent } from "react";
 
 import { cn } from "@/lib/utils";
-import { usePermissions } from "@/features/auth";
 
 import { navItems } from "../lib/nav-items";
 
@@ -14,8 +13,7 @@ import { navItems } from "../lib/nav-items";
 export function BottomNav() {
   const pathname = usePathname();
   const t = useTranslations("nav");
-  const { isSuperAdmin } = usePermissions();
-  const visibleItems = navItems.filter((item) => !item.superAdminOnly || isSuperAdmin);
+  const visibleItems = navItems.filter((item) => !item.superAdminOnly);
 
   return (
     <nav
