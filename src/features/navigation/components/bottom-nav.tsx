@@ -20,7 +20,7 @@ export function BottomNav() {
   return (
     <nav
       className={cn(
-        "glass-panel fixed inset-x-2 bottom-[calc(0.6rem+env(safe-area-inset-bottom))] z-40 grid items-center rounded-2xl px-1.5 py-1.5 sm:hidden",
+        "glass-panel fixed inset-x-3 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 grid items-center rounded-2xl px-1.5 py-1.5 sm:hidden",
         visibleItems.length <= 4 ? "grid-cols-4" : "grid-cols-5",
       )}
     >

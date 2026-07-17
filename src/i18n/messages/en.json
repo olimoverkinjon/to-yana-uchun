@@ -401,6 +401,17 @@
     "empty": "No users found",
     "emptyBody": "Try changing the search, role or status filters."
   },
+  "adminHome": {
+    "title": "Admin",
+    "description": "Manage the wedding registry and Mini App users.",
+    "totalEvents": "Weddings",
+    "totalGifts": "Gifts",
+    "totalUsers": "Users",
+    "usersTitle": "Mini App users",
+    "usersDescription": "See who opened the app, their role, language and last login.",
+    "historyTitle": "Change history",
+    "historyDescription": "Review edits and restored records when needed."
+  },
   "search": {
     "title": "Search",
     "placeholder": "Search a person, wedding, or year",

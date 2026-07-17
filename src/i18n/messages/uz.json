@@ -401,6 +401,17 @@
     "empty": "User topilmadi",
     "emptyBody": "Qidiruv, rol yoki holat filterini o'zgartirib ko'ring."
   },
+  "adminHome": {
+    "title": "Admin",
+    "description": "To'ylar reyestri va mini app foydalanuvchilarini boshqaring.",
+    "totalEvents": "To'ylar",
+    "totalGifts": "Sovg'alar",
+    "totalUsers": "Userlar",
+    "usersTitle": "Mini app foydalanuvchilari",
+    "usersDescription": "Kim kirganini, roli, tili va oxirgi kirishini ko'ring.",
+    "historyTitle": "O'zgarishlar tarixi",
+    "historyDescription": "Kerak bo'lsa tahrirlar va tiklangan yozuvlarni tekshiring."
+  },
   "search": {
     "title": "Qidiruv",
     "placeholder": "Ism, to'y yoki yil bo'yicha qidiring",

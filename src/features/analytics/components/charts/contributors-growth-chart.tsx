@@ -34,7 +34,7 @@ interface ContributorsGrowthChartProps {
  * wedding and read as "we lost contributors", which would be false.
  */
 export function ContributorsGrowthChart({ filters }: ContributorsGrowthChartProps) {
-  const t = useTranslations("dashboard.charts.growth");
+  const t = useTranslations("dashboard.charts.contributorsGrowth");
   const tCommon = useTranslations("dashboard.charts");
   const locale = useLocale();
   const query = useContributorsGrowthQuery(filters, 24);
