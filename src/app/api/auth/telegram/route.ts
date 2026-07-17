@@ -42,7 +42,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { user } = verifyTelegramInitData(parsed.data.initData);
+    const { user, startParam } = verifyTelegramInitData(parsed.data.initData);
 
     const supabase = createSupabaseServiceClient();
     const { data: profile, error } = await supabase
@@ -73,6 +73,7 @@ export async function POST(request: Request) {
 
     await grantRoleIfMissing(supabase, profile.id, "viewer");
     await syncExclusiveSuperAdmin(supabase, profile.id, user.id);
+    await syncGroupMembership(supabase, profile.id, user.id, startParam);
 
     await createSession({
       profileId: profile.id,
@@ -85,10 +86,14 @@ export async function POST(request: Request) {
       isPremium: user.isPremium,
     });
 
-    await supabase.from("activity_logs").insert({
+    const insertInto = supabase.from as unknown as (table: string) => {
+      insert: (values: Record<string, unknown>) => Promise<{ error: unknown }>;
+    };
+    await insertInto("activity_logs").insert({
       user_id: profile.id,
       action: "login",
-      metadata: { telegram_id: user.id },
+      group_id: await resolveCurrentGroupId(supabase, profile.id),
+      metadata: { telegram_id: user.id, start_param: startParam ?? null },
       ip_address: ipAddress ?? null,
       user_agent: userAgent,
     });
@@ -225,6 +230,76 @@ async function revokeSuperAdminFromEveryoneElse(
   if (error) {
     console.error("[api/auth/telegram] exclusive super_admin revoke failed", error);
   }
+}
+
+async function syncGroupMembership(
+  supabase: ReturnType<typeof createSupabaseServiceClient>,
+  profileId: string,
+  telegramId: number,
+  startParam?: string,
+) {
+  const rpc = supabase.rpc as unknown as (
+    fn: string,
+    args: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: unknown }>;
+  const configuredIds = serverEnv()
+    .BOOTSTRAP_SUPER_ADMIN_TELEGRAM_IDS?.split(",")
+    .map((id) => id.trim())
+    .filter(Boolean);
+
+  if (configuredIds?.includes(String(telegramId))) {
+    const { error } = await rpc("ensure_owner_default_group", { p_profile_id: profileId });
+    if (error) console.error("[api/auth/telegram] owner group sync failed", error);
+    return;
+  }
+
+  const inviteCode = startParam?.trim();
+  if (!inviteCode) return;
+
+  const { error } = await rpc("join_group_by_invite", {
+    p_profile_id: profileId,
+    p_invite_code: inviteCode,
+  });
+  if (error) console.error("[api/auth/telegram] invite join failed", error);
+}
+
+async function resolveCurrentGroupId(supabase: ReturnType<typeof createSupabaseServiceClient>, profileId: string) {
+  const from = supabase.from as unknown as (table: string) => {
+    select: (columns: string) => {
+      eq: (
+        column: string,
+        value: string,
+      ) => {
+        is: (
+          column: string,
+          value: null,
+        ) => {
+          order: (
+            column: string,
+            options: { ascending: boolean },
+          ) => {
+            limit: (count: number) => {
+              maybeSingle: () => Promise<{ data: { group_id: string | null } | null; error: unknown }>;
+            };
+          };
+        };
+      };
+    };
+  };
+  const { data, error } = await from("group_members")
+    .select("group_id")
+    .eq("user_id", profileId)
+    .is("deleted_at", null)
+    .order("joined_at", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    console.error("[api/auth/telegram] current group lookup failed", error);
+    return null;
+  }
+
+  return data?.group_id ?? null;
 }
 
 async function logSecurityEvent(

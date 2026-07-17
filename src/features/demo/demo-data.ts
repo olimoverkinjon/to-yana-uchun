@@ -14,6 +14,7 @@ import type { GiftListPage, GiftWithRelations } from "@/features/gifts/types";
 import type { CurrencyRow, GiftTypeRow } from "@/features/reference-data";
 
 export const demoProfileId = "00000000-0000-4000-8000-000000000001";
+export const demoGroupId = "00000000-0000-4000-8000-000000000011";
 export const demoEventId = "00000000-0000-4000-8000-000000000101";
 export const demoGiftId = "00000000-0000-4000-8000-000000000201";
 export const demoCashTypeId = "00000000-0000-4000-8000-000000000301";
@@ -127,6 +128,7 @@ export const demoGiftTypes: GiftTypeRow[] = [
 export const demoEventRow: EventRow = {
   id: demoEventId,
   title: "Local Demo Wedding",
+  group_id: demoGroupId,
   description: "Fully local demo event for frontend, backend routes and admin screens.",
   bride_name: "Madina",
   groom_name: "Aziz",

@@ -11,6 +11,7 @@ export type Database = {
         Row: {
           action: string;
           created_at: string;
+          group_id: string | null;
           id: string;
           ip_address: unknown;
           metadata: Json;
@@ -20,6 +21,7 @@ export type Database = {
         Insert: {
           action: string;
           created_at?: string;
+          group_id?: string | null;
           id?: string;
           ip_address?: unknown;
           metadata?: Json;
@@ -29,6 +31,7 @@ export type Database = {
         Update: {
           action?: string;
           created_at?: string;
+          group_id?: string | null;
           id?: string;
           ip_address?: unknown;
           metadata?: Json;
@@ -36,6 +39,13 @@ export type Database = {
           user_id?: string | null;
         };
         Relationships: [
+          {
+            foreignKeyName: "activity_logs_group_id_fkey";
+            columns: ["group_id"];
+            isOneToOne: false;
+            referencedRelation: "groups";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "activity_logs_user_id_fkey";
             columns: ["user_id"];
@@ -180,6 +190,7 @@ export type Database = {
           changed_fields: Json;
           created_at: string;
           device: string | null;
+          group_id: string | null;
           id: string;
           ip_address: unknown;
           new_data: Json | null;
@@ -204,6 +215,7 @@ export type Database = {
           changed_fields?: Json;
           created_at?: string;
           device?: string | null;
+          group_id?: string | null;
           id?: string;
           ip_address?: unknown;
           new_data?: Json | null;
@@ -228,6 +240,7 @@ export type Database = {
           changed_fields?: Json;
           created_at?: string;
           device?: string | null;
+          group_id?: string | null;
           id?: string;
           ip_address?: unknown;
           new_data?: Json | null;
@@ -250,6 +263,13 @@ export type Database = {
             columns: ["changed_by"];
             isOneToOne: false;
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "audit_logs_group_id_fkey";
+            columns: ["group_id"];
+            isOneToOne: false;
+            referencedRelation: "groups";
             referencedColumns: ["id"];
           },
         ];
@@ -301,6 +321,7 @@ export type Database = {
           event_date: string | null;
           event_year: number;
           groom_name: string | null;
+          group_id: string | null;
           id: string;
           location: string | null;
           search_vector: unknown;
@@ -319,6 +340,7 @@ export type Database = {
           event_date?: string | null;
           event_year: number;
           groom_name?: string | null;
+          group_id?: string | null;
           id?: string;
           location?: string | null;
           search_vector?: unknown;
@@ -337,6 +359,7 @@ export type Database = {
           event_date?: string | null;
           event_year?: number;
           groom_name?: string | null;
+          group_id?: string | null;
           id?: string;
           location?: string | null;
           search_vector?: unknown;
@@ -351,6 +374,13 @@ export type Database = {
             columns: ["created_by"];
             isOneToOne: false;
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "events_group_id_fkey";
+            columns: ["group_id"];
+            isOneToOne: false;
+            referencedRelation: "groups";
             referencedColumns: ["id"];
           },
           {
@@ -532,6 +562,102 @@ export type Database = {
           {
             foreignKeyName: "gifts_updated_by_fkey";
             columns: ["updated_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      group_members: {
+        Row: {
+          deleted_at: string | null;
+          group_id: string;
+          id: string;
+          invited_by: string | null;
+          joined_at: string;
+          role: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          deleted_at?: string | null;
+          group_id: string;
+          id?: string;
+          invited_by?: string | null;
+          joined_at?: string;
+          role: string;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          deleted_at?: string | null;
+          group_id?: string;
+          id?: string;
+          invited_by?: string | null;
+          joined_at?: string;
+          role?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "group_members_group_id_fkey";
+            columns: ["group_id"];
+            isOneToOne: false;
+            referencedRelation: "groups";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "group_members_invited_by_fkey";
+            columns: ["invited_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "group_members_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      groups: {
+        Row: {
+          created_at: string;
+          deleted_at: string | null;
+          id: string;
+          invite_code: string;
+          name: string;
+          owner_id: string | null;
+          slug: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          deleted_at?: string | null;
+          id?: string;
+          invite_code?: string;
+          name: string;
+          owner_id?: string | null;
+          slug: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          deleted_at?: string | null;
+          id?: string;
+          invite_code?: string;
+          name?: string;
+          owner_id?: string | null;
+          slug?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "groups_owner_id_fkey";
+            columns: ["owner_id"];
             isOneToOne: false;
             referencedRelation: "profiles";
             referencedColumns: ["id"];
@@ -1147,6 +1273,7 @@ export type Database = {
           event_date: string | null;
           event_year: number;
           groom_name: string | null;
+          group_id: string | null;
           id: string;
           location: string | null;
           search_vector: unknown;
@@ -1206,6 +1333,7 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      current_group_id: { Args: never; Returns: string };
       dashboard_totals: {
         Args: {
           p_currency_id?: string;
@@ -1232,6 +1360,25 @@ export type Database = {
           total_events: number;
           total_gifts: number;
         }[];
+      };
+      ensure_owner_default_group: {
+        Args: { p_profile_id: string };
+        Returns: {
+          created_at: string;
+          deleted_at: string | null;
+          id: string;
+          invite_code: string;
+          name: string;
+          owner_id: string | null;
+          slug: string;
+          updated_at: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "groups";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
       };
       event_statistics: {
         Args: { p_event_id: string };
@@ -1278,6 +1425,7 @@ export type Database = {
           event_date: string | null;
           event_year: number;
           groom_name: string | null;
+          group_id: string | null;
           id: string;
           location: string | null;
           search_vector: unknown;
@@ -1396,8 +1544,29 @@ export type Database = {
         }[];
       };
       has_role: { Args: { p_role_name: string }; Returns: boolean };
+      is_group_admin: { Args: { p_group_id: string }; Returns: boolean };
+      is_group_member: { Args: { p_group_id: string }; Returns: boolean };
       is_super_admin: { Args: never; Returns: boolean };
       is_viewer_or_above: { Args: never; Returns: boolean };
+      join_group_by_invite: {
+        Args: { p_invite_code: string; p_profile_id: string };
+        Returns: {
+          deleted_at: string | null;
+          group_id: string;
+          id: string;
+          invited_by: string | null;
+          joined_at: string;
+          role: string;
+          updated_at: string;
+          user_id: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "group_members";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       log_activity: {
         Args: {
           p_action: string;
@@ -1438,6 +1607,7 @@ export type Database = {
           event_date: string | null;
           event_year: number;
           groom_name: string | null;
+          group_id: string | null;
           id: string;
           location: string | null;
           search_vector: unknown;
@@ -1472,6 +1642,7 @@ export type Database = {
           event_date: string | null;
           event_year: number;
           groom_name: string | null;
+          group_id: string | null;
           id: string;
           location: string | null;
           search_vector: unknown;
@@ -1585,6 +1756,7 @@ export type Database = {
           event_date: string | null;
           event_year: number;
           groom_name: string | null;
+          group_id: string | null;
           id: string;
           location: string | null;
           search_vector: unknown;
@@ -1639,6 +1811,7 @@ export type Database = {
           event_date: string | null;
           event_year: number;
           groom_name: string | null;
+          group_id: string | null;
           id: string;
           location: string | null;
           search_vector: unknown;
@@ -1737,6 +1910,7 @@ export type Database = {
           event_date: string | null;
           event_year: number;
           groom_name: string | null;
+          group_id: string | null;
           id: string;
           location: string | null;
           search_vector: unknown;

@@ -109,16 +109,7 @@ export async function listAdminUsers(supabase: Client, query: AdminQuery = {}): 
   const profiles = (data ?? []) as ProfileRow[];
   const ids = profiles.map((profile) => profile.id);
 
-  const { data: grants, error: grantsError } = ids.length
-    ? await supabase.from("user_roles").select("user_id, roles (*)").in("user_id", ids).is("deleted_at", null)
-    : { data: [], error: null };
-  if (grantsError) throw grantsError;
-
-  const roleByUser = new Map<string, RoleRow[]>();
-  for (const grant of (grants ?? []) as unknown as { user_id: string; roles: RoleRow | null }[]) {
-    if (!grant.roles) continue;
-    roleByUser.set(grant.user_id, [...(roleByUser.get(grant.user_id) ?? []), grant.roles]);
-  }
+  const roleByUser = await groupRolesByUser(supabase, ids);
 
   const items = profiles.map((profile) => ({ ...profile, roles: roleByUser.get(profile.id) ?? [] }));
 
@@ -132,15 +123,44 @@ export async function getAdminUser(supabase: Client, id: string): Promise<AdminU
   if (direct.error) throw direct.error;
   if (!direct.data) return null;
 
-  const roles = await supabase.from("user_roles").select("roles (*)").eq("user_id", id).is("deleted_at", null);
-  if (roles.error) throw roles.error;
-
+  const roleByUser = await groupRolesByUser(supabase, [id]);
   return {
     ...(direct.data as ProfileRow),
-    roles: ((roles.data ?? []) as unknown as { roles: RoleRow | null }[]).flatMap((row) =>
-      row.roles ? [row.roles] : [],
-    ),
+    roles: roleByUser.get(id) ?? [],
   };
+}
+
+async function groupRolesByUser(supabase: Client, userIds: string[]): Promise<Map<string, RoleRow[]>> {
+  const roleByUser = new Map<string, RoleRow[]>();
+  if (userIds.length === 0) return roleByUser;
+
+  const roles = await listRoles(supabase);
+  const viewer = roles.find((role) => role.name === "viewer");
+  const admin = roles.find((role) => role.name === "super_admin");
+
+  const from = supabase.from as unknown as (table: string) => {
+    select: (columns: string) => {
+      in: (
+        column: string,
+        values: string[],
+      ) => {
+        is: (column: string, value: null) => Promise<{ data: unknown[] | null; error: unknown }>;
+      };
+    };
+  };
+  const { data, error } = await from("group_members")
+    .select("user_id, role")
+    .in("user_id", userIds)
+    .is("deleted_at", null);
+  if (error) throw error;
+
+  for (const member of (data ?? []) as { user_id: string; role: "owner" | "admin" | "member" }[]) {
+    const mapped = member.role === "member" ? viewer : admin;
+    if (!mapped) continue;
+    roleByUser.set(member.user_id, [...(roleByUser.get(member.user_id) ?? []), mapped]);
+  }
+
+  return roleByUser;
 }
 
 export async function listSettings(supabase: Client, query: AdminQuery = {}): Promise<AdminList<SettingRow>> {

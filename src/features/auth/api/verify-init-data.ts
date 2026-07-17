@@ -31,6 +31,7 @@ export interface VerifiedTelegramUser {
 export interface VerifiedInitData {
   authDate: Date;
   user: VerifiedTelegramUser;
+  startParam?: string;
 }
 
 /**
@@ -97,6 +98,7 @@ function parseVerifiedFields(params: URLSearchParams): VerifiedInitData {
 
   return {
     authDate,
+    startParam: params.get("start_param") ?? undefined,
     user: {
       id: parsedUser.id,
       firstName: parsedUser.first_name,
