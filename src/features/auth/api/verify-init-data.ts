@@ -52,6 +52,7 @@ export function verifyTelegramInitData(rawInitData: string): VerifiedInitData {
 
   if (!isDevMock) {
     params.delete("hash");
+    params.delete("signature");
     const dataCheckString = Array.from(params.entries())
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([key, value]) => `${key}=${value}`)

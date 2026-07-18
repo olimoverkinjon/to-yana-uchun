@@ -110,6 +110,7 @@ export async function POST(request: Request) {
     return response;
   } catch (error) {
     if (error instanceof InitDataVerificationError) {
+      console.warn("[api/auth/telegram] initData verification failed", error.message);
       await logSecurityEvent("auth", "warning", "Telegram initData verification failed", { ipAddress, userAgent });
       return NextResponse.json({ error: "verification_failed" }, { status: 401, headers: NO_STORE });
     }
