@@ -12,7 +12,7 @@ import { isLocalDemoMode } from "@/shared/lib/local-demo";
 
 import { useTelegramAuthMutation } from "../hooks/use-telegram-auth";
 import { useSessionQuery } from "../hooks/use-session";
-import { readTelegramInitData } from "../lib/telegram-init-data";
+import { waitForTelegramInitData } from "../lib/telegram-init-data";
 
 /**
  * The whole of PRD §9 in one component: detect the Telegram user, verify
@@ -34,38 +34,53 @@ export function AuthGate() {
   const signedInUser = session.data?.user ?? null;
 
   useEffect(() => {
+    let cancelled = false;
+
+    async function authenticateFromTelegram() {
+      if (isLocalDemoMode()) {
+        router.replace("/dashboard");
+        return;
+      }
+      if (!isReady || session.isLoading || attempted.current) return;
+
+      const rawInitData = await waitForTelegramInitData();
+      if (cancelled) return;
+
+      if (!rawInitData) {
+        if (!isTelegramEnvironment && signedInUser) {
+          router.replace("/dashboard");
+          return;
+        }
+        if (signedInUser) {
+          router.replace("/dashboard");
+          return;
+        }
+        setInitDataMissing(true);
+        return;
+      }
+
+      const telegramUserId = readTelegramUserId(rawInitData);
+      if (signedInUser && telegramUserId === signedInUser.telegramId) {
+        router.replace("/dashboard");
+        return;
+      }
+
+      attempted.current = true;
+      authMutation.mutate({ initData: rawInitData, inviteCode: readInviteCode() });
+    }
+
+    void authenticateFromTelegram();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isReady, isTelegramEnvironment, session.isLoading, signedInUser, authMutation, router]);
+
+  useEffect(() => {
     if (isLocalDemoMode()) {
       router.replace("/dashboard");
       return;
     }
-    if (!isReady || session.isLoading || attempted.current) return;
-
-    const rawInitData = readTelegramInitData();
-
-    if (!rawInitData) {
-      if (!isTelegramEnvironment && signedInUser) {
-        router.replace("/dashboard");
-        return;
-      }
-      if (signedInUser) {
-        router.replace("/dashboard");
-        return;
-      }
-      setInitDataMissing(true);
-      return;
-    }
-
-    const telegramUserId = readTelegramUserId(rawInitData);
-    if (signedInUser && telegramUserId === signedInUser.telegramId) {
-      router.replace("/dashboard");
-      return;
-    }
-
-    attempted.current = true;
-    authMutation.mutate({ initData: rawInitData, inviteCode: readInviteCode() });
-  }, [isReady, isTelegramEnvironment, session.isLoading, signedInUser, authMutation, router]);
-
-  useEffect(() => {
     if (authMutation.isSuccess) {
       router.replace("/dashboard");
       router.refresh();
@@ -87,6 +102,7 @@ export function AuthGate() {
             attempted.current = false;
             setInitDataMissing(false);
             authMutation.reset();
+            router.refresh();
           }}
         >
           <RotateCw className="mr-2 size-4" />

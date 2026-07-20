@@ -19,6 +19,21 @@ export interface TelegramInitResult {
   isTelegramEnvironment: boolean;
 }
 
+declare global {
+  interface Window {
+    Telegram?: {
+      WebApp?: {
+        initData?: string;
+      };
+    };
+    TelegramWebviewProxy?: unknown;
+  }
+
+  interface External {
+    notify?: (message: string) => void;
+  }
+}
+
 let initPromise: Promise<TelegramInitResult> | null = null;
 
 /**
@@ -37,7 +52,8 @@ export function initTelegramSdk(): Promise<TelegramInitResult> {
 }
 
 async function boot(): Promise<TelegramInitResult> {
-  const isRealTelegramEnvironment = await isTMA("complete");
+  const hasHostProvidedLaunchParams = hasTelegramHost() || hasTelegramLaunchParams();
+  const isRealTelegramEnvironment = hasHostProvidedLaunchParams || (await isTMA("complete"));
   let usable = isRealTelegramEnvironment;
 
   if (!isRealTelegramEnvironment) {
@@ -78,6 +94,15 @@ async function boot(): Promise<TelegramInitResult> {
   }
 
   return { isTelegramEnvironment: usable };
+}
+
+function hasTelegramHost() {
+  return Boolean(window.Telegram?.WebApp?.initData || window.TelegramWebviewProxy || window.external?.notify);
+}
+
+function hasTelegramLaunchParams() {
+  const href = window.location.href.replace(/^[^?#]*[?#]/, "").replace(/[?#]/g, "&");
+  return href.includes("tgWebAppData=") || window.localStorage.getItem("launchParams")?.includes("tgWebAppData=");
 }
 
 function mockDevelopmentEnvironment() {

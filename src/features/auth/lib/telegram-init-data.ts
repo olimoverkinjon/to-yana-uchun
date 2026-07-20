@@ -26,6 +26,18 @@ export function readTelegramInitData(): string | undefined {
   return readInitDataFromLocation();
 }
 
+export async function waitForTelegramInitData(timeoutMs = 3000): Promise<string | undefined> {
+  const startedAt = Date.now();
+
+  while (Date.now() - startedAt < timeoutMs) {
+    const initData = readTelegramInitData();
+    if (initData) return initData;
+    await sleep(100);
+  }
+
+  return readTelegramInitData();
+}
+
 function readInitDataFromLocation(): string | undefined {
   const sources = [window.location.hash.replace(/^#/, ""), window.location.search.replace(/^\?/, "")];
 
@@ -37,4 +49,8 @@ function readInitDataFromLocation(): string | undefined {
   }
 
   return undefined;
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
