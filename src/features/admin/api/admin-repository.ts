@@ -138,7 +138,7 @@ async function groupRolesByUser(supabase: Client, userIds: string[]): Promise<Ma
   const viewer = roles.find((role) => role.name === "viewer");
   const admin = roles.find((role) => role.name === "super_admin");
 
-  const from = supabase.from as unknown as (table: string) => {
+  const from = supabase.from.bind(supabase) as unknown as (table: string) => {
     select: (columns: string) => {
       in: (
         column: string,

@@ -45,7 +45,7 @@ function adminRpc<T>(
   name: string,
   args: Record<string, unknown>,
 ): RpcResult<T> {
-  const rpc = supabase.rpc as unknown as (fn: string, args: Record<string, unknown>) => RpcResult<T>;
+  const rpc = supabase.rpc.bind(supabase) as unknown as (fn: string, args: Record<string, unknown>) => RpcResult<T>;
   return rpc(name, args);
 }
 

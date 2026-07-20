@@ -89,7 +89,7 @@ export async function POST(request: Request) {
       isPremium: user.isPremium,
     });
 
-    const insertInto = supabase.from as unknown as (table: string) => {
+    const insertInto = supabase.from.bind(supabase) as unknown as (table: string) => {
       insert: (values: Record<string, unknown>) => Promise<{ error: unknown }>;
     };
     await insertInto("activity_logs").insert({
@@ -242,7 +242,7 @@ async function syncGroupMembership(
   telegramId: number,
   startParam?: string,
 ) {
-  const rpc = supabase.rpc as unknown as (
+  const rpc = supabase.rpc.bind(supabase) as unknown as (
     fn: string,
     args: Record<string, unknown>,
   ) => Promise<{ data: unknown; error: unknown }>;
@@ -268,7 +268,7 @@ async function syncGroupMembership(
 }
 
 async function resolveCurrentGroupId(supabase: ReturnType<typeof createSupabaseServiceClient>, profileId: string) {
-  const from = supabase.from as unknown as (table: string) => {
+  const from = supabase.from.bind(supabase) as unknown as (table: string) => {
     select: (columns: string) => {
       eq: (
         column: string,
