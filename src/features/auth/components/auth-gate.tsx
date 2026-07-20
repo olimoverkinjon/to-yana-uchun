@@ -28,6 +28,7 @@ export function AuthGate() {
   const authMutation = useTelegramAuthMutation();
   const attempted = useRef(false);
   const [initDataMissing, setInitDataMissing] = useState(false);
+  const [inviteJoinFailed, setInviteJoinFailed] = useState(false);
 
   // The query always resolves to an object — `{ user: null }` for a signed-out
   // visitor — so signed-in-ness is the presence of `user`, not of `data`.
@@ -43,10 +44,24 @@ export function AuthGate() {
       }
       if (!isReady || session.isLoading || attempted.current) return;
 
+      const inviteCode = readInviteCode();
       const rawInitData = await waitForTelegramInitData();
       if (cancelled) return;
 
       if (!rawInitData) {
+        if (signedInUser && inviteCode) {
+          attempted.current = true;
+          try {
+            await joinInvite(inviteCode);
+            if (!cancelled) {
+              router.replace("/dashboard");
+              router.refresh();
+            }
+          } catch {
+            if (!cancelled) setInviteJoinFailed(true);
+          }
+          return;
+        }
         if (!isTelegramEnvironment && signedInUser) {
           router.replace("/dashboard");
           return;
@@ -61,12 +76,25 @@ export function AuthGate() {
 
       const telegramUserId = readTelegramUserId(rawInitData);
       if (signedInUser && telegramUserId === signedInUser.telegramId) {
+        if (inviteCode) {
+          attempted.current = true;
+          try {
+            await joinInvite(inviteCode);
+            if (!cancelled) {
+              router.replace("/dashboard");
+              router.refresh();
+            }
+          } catch {
+            if (!cancelled) setInviteJoinFailed(true);
+          }
+          return;
+        }
         router.replace("/dashboard");
         return;
       }
 
       attempted.current = true;
-      authMutation.mutate({ initData: rawInitData, inviteCode: readInviteCode() });
+      authMutation.mutate({ initData: rawInitData, inviteCode });
     }
 
     void authenticateFromTelegram();
@@ -87,7 +115,7 @@ export function AuthGate() {
     }
   }, [authMutation.isSuccess, router]);
 
-  const hasFailed = authMutation.isError || initDataMissing;
+  const hasFailed = authMutation.isError || initDataMissing || inviteJoinFailed;
 
   if (hasFailed) {
     return (
@@ -101,6 +129,7 @@ export function AuthGate() {
           onClick={() => {
             attempted.current = false;
             setInitDataMissing(false);
+            setInviteJoinFailed(false);
             authMutation.reset();
             router.refresh();
           }}
@@ -130,4 +159,16 @@ function readInviteCode(): string | undefined {
   if (typeof window === "undefined") return undefined;
   const value = new URLSearchParams(window.location.search).get("invite")?.trim();
   return value || undefined;
+}
+
+async function joinInvite(inviteCode: string) {
+  const response = await fetch("/api/auth/join-invite", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ inviteCode }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Invite join failed");
+  }
 }
