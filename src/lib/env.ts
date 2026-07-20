@@ -42,6 +42,10 @@ function readClientEnv() {
     );
   }
 
+  if (process.env.VERCEL_ENV === "production" && parsed.data.NEXT_PUBLIC_APP_URL?.includes("localhost")) {
+    throw new Error("NEXT_PUBLIC_APP_URL must not point to localhost in production");
+  }
+
   return parsed.data;
 }
 
